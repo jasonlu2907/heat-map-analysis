@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
+import 'react-datepicker/dist/react-datepicker.css';
+import FilterForm from './sidebarComponents/FilterForm';
 
 const SideBar = () => {
+  const [showHeatMap, setShowHeatMap] = useState(false);
   return (
-    <div className='fixed left-10 top-20 flex flex-col bg-gray-300 p-4 ml-10  w-64 h-full z-40 opacity-80'>
-      <h2 className='text-lg font-bold mb-40'>Sidebar</h2>
-      <ul>
-        <li className='mb-2'>Option 1</li>
-        <li className='mb-2'>Option 2</li>
-        <li className='mb-2'>Option 3</li>
-      </ul>
+    <div className='fixed right-0 top-20 flex flex-col bg-gray-100 p-6 w-64 h-full z-20 shadow-lg opacity-80'>
+      <h2 className='text-lg font-semibold mb-6'>Filter Options</h2>
+
+      <FilterForm />
+
+      <div className='flex items-center mt-4'>
+        <input
+          type='checkbox'
+          checked={showHeatMap}
+          onChange={(e) => setShowHeatMap(e.target.checked)}
+          className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
+        />
+        <label className='ml-2 block text-md text-gray-700'>
+          Show Heat Map
+        </label>
+      </div>
     </div>
   );
 };
