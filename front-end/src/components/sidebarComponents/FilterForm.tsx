@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 
-const FilterForm = () => {
+import {
+  ARLINGTON_ZIP_CODES,
+  ARLINGTON_ZIP_COORD,
+} from '../../assets/arlington';
+import { Point } from '../mapComponents/HeatmapLayer';
+
+interface SideBarProps {
+  onZipCodeSubmit: (coords: Point) => void;
+}
+
+const FilterForm: React.FC<SideBarProps> = ({ onZipCodeSubmit }) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [zipCode, setZipCode] = useState('');
@@ -9,9 +19,8 @@ const FilterForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log('Start Date:', startDate);
-    console.log('End Date:', endDate);
-    console.log('Zip Code:', zipCode);
+    const zipCoord: Point = ARLINGTON_ZIP_COORD[zipCode];
+    onZipCodeSubmit(zipCoord);
   };
 
   return (
@@ -40,17 +49,23 @@ const FilterForm = () => {
           placeholderText='Select End Date'
         />
       </div>
+
       <div>
         <label className='block text-sm font-medium text-gray-700 mb-1'>
           Zip Code
         </label>
-        <input
-          type='text'
+        <select
           value={zipCode}
           onChange={(e) => setZipCode(e.target.value)}
           className='w-full p-2 border border-gray-300 rounded'
-          placeholder='Enter Zip Code'
-        />
+        >
+          <option value=''>Select a zip code</option>
+          {ARLINGTON_ZIP_CODES.map(({ code }) => (
+            <option key={code} value={code}>
+              {code}
+            </option>
+          ))}
+        </select>
       </div>
 
       <button

@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
-import FilterForm from './sidebarComponents/FilterForm';
 
-const SideBar = () => {
+import FilterForm from './sidebarComponents/FilterForm';
+import { Point } from './mapComponents/HeatmapLayer';
+
+interface SideBarProps {
+  onZipCodeSubmit: (coords: Point) => void;
+}
+
+const SideBar: React.FC<SideBarProps> = ({ onZipCodeSubmit }) => {
   const [showHeatMap, setShowHeatMap] = useState(false);
+
   return (
     <div className='fixed right-0 top-20 flex flex-col bg-gray-100 p-6 w-64 h-full z-20 shadow-lg opacity-80'>
       <h2 className='text-lg font-semibold mb-6'>Filter Options</h2>
 
-      <FilterForm />
+      <FilterForm onZipCodeSubmit={onZipCodeSubmit} />
 
       <div className='flex items-center mt-4'>
         <input

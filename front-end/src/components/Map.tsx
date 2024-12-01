@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet.heat';
-import HeatmapLayer, { Point } from './mapComponents/HeatmapLayer';
 
-const MapComponent: React.FC = () => {
-  const position: [number, number] = [32.7357, -97.1081]; // Arlington coordinates
+import HeatmapLayer, { Point } from './mapComponents/HeatmapLayer';
+import BorderLayer from './mapComponents/BorderLayer';
+import ChangeMapView from './mapComponents/ChangeMapView';
+
+interface MapProps {
+  position: Point;
+}
+
+const Map: React.FC<MapProps> = ({ position }: { position: Point }) => {
   const [opacity, setOpacity] = useState(0.6);
+  const animateRef = useRef(true);
 
   // Large, predefined dataset for the heatmap
   const heatmapData: Point[] = [
@@ -70,6 +77,7 @@ const MapComponent: React.FC = () => {
         scrollWheelZoom={false}
         style={{ height: '100vh', width: '100%', zIndex: 10 }}
       >
+        <ChangeMapView position={position} animateRef={animateRef} />
         <TileLayer
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -82,6 +90,8 @@ const MapComponent: React.FC = () => {
 
         {/* Heatmap Layer */}
         <HeatmapLayer points={heatmapData} opacity={opacity} />
+
+        <BorderLayer />
       </MapContainer>
 
       {/* Opacity Slider */}
@@ -108,4 +118,4 @@ const MapComponent: React.FC = () => {
   );
 };
 
-export default MapComponent;
+export default Map;
