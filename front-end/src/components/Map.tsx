@@ -5,7 +5,7 @@ import 'leaflet.heat';
 import HeatmapLayer, { Point } from './mapComponents/HeatmapLayer';
 import BorderLayer from './mapComponents/BorderLayer';
 import ChangeMapView from './mapComponents/ChangeMapView';
-import Legend from './Legendomponents.txs/Legend';
+import Legend from './mapComponents/Legend';
 
 interface MapProps {
   position: Point;
@@ -93,7 +93,7 @@ const Map: React.FC<MapProps> = ({ position }: { position: Point }) => {
         <HeatmapLayer points={heatmapData} opacity={opacity} />
 
         <BorderLayer />
-        <Legend/>
+        <Legend />
       </MapContainer>
 
       {/* Opacity Slider */}
