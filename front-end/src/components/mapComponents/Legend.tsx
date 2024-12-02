@@ -85,7 +85,7 @@ const Legend = () => {
         labels.push(
           `<i style="background:${getColor(
             from + 1
-          )}">Hello Hello</i> ${from} &ndash; ${to}`
+          )}"></i> ${from} &ndash; ${to}`
         );
       }
 
