@@ -3,12 +3,20 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import FilterForm from './sidebarComponents/FilterForm';
 import { Point } from './mapComponents/HeatmapLayer';
+import OpacitySlider from './sidebarComponents/OpacitySlider';
+// import OpacitySlider from './sidebarComponents/OpacitySlider';
 
 interface SideBarProps {
   onZipCodeSubmit: (coords: Point) => void;
+  heatOpacity: number;
+  setHeatOpacity: (number: number) => void;
 }
 
-const SideBar: React.FC<SideBarProps> = ({ onZipCodeSubmit }) => {
+const SideBar: React.FC<SideBarProps> = ({
+  onZipCodeSubmit,
+  heatOpacity,
+  setHeatOpacity,
+}) => {
   const [showHeatMap, setShowHeatMap] = useState(false);
 
   return (
@@ -28,6 +36,9 @@ const SideBar: React.FC<SideBarProps> = ({ onZipCodeSubmit }) => {
           Show Heat Map
         </label>
       </div>
+
+      {/* Opacity Slider */}
+      <OpacitySlider opacity={heatOpacity} setOpacity={setHeatOpacity} />
     </div>
   );
 };

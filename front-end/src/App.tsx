@@ -9,6 +9,7 @@ import { Point } from './components/mapComponents/HeatmapLayer';
 const App: React.FC = () => {
   // Default to Arlington coordinates
   const [mapCenter, setMapCenter] = useState<Point>([32.7357, -97.1081]);
+  const [heatOpacity, setHeatOpacity] = useState(0.6);
 
   const handleZipCodeSubmit = (zipCoords: Point) => {
     setMapCenter(zipCoords);
@@ -17,8 +18,12 @@ const App: React.FC = () => {
   return (
     <div className='h-screen relative'>
       <Navbar />
-      <SideBar onZipCodeSubmit={handleZipCodeSubmit} />
-      <Map position={mapCenter} />
+      <SideBar
+        heatOpacity={heatOpacity}
+        setHeatOpacity={setHeatOpacity}
+        onZipCodeSubmit={handleZipCodeSubmit}
+      />
+      <Map heatOpacity={heatOpacity} position={mapCenter} />
     </div>
   );
 };

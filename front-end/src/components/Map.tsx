@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet.heat';
 
@@ -8,11 +8,11 @@ import ChangeMapView from './mapComponents/ChangeMapView';
 import Legend from './mapComponents/Legend';
 
 interface MapProps {
+  heatOpacity: number;
   position: Point;
 }
 
-const Map: React.FC<MapProps> = ({ position }: { position: Point }) => {
-  const [opacity, setOpacity] = useState(0.6);
+const Map: React.FC<MapProps> = ({ heatOpacity, position }) => {
   const animateRef = useRef(true);
 
   // Large, predefined dataset for the heatmap
@@ -90,32 +90,11 @@ const Map: React.FC<MapProps> = ({ position }: { position: Point }) => {
         </Marker>
 
         {/* Heatmap Layer */}
-        <HeatmapLayer points={heatmapData} opacity={opacity} />
+        <HeatmapLayer points={heatmapData} opacity={heatOpacity} />
 
         <BorderLayer />
         <Legend />
       </MapContainer>
-
-      {/* Opacity Slider */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '30px',
-          right: '10px',
-          zIndex: 1000,
-        }}
-      >
-        <label htmlFor='opacity-slider'>Heatmap Opacity:</label>
-        <input
-          type='range'
-          id='opacity-slider'
-          min='0'
-          max='1'
-          step='0.1'
-          value={opacity}
-          onChange={(e) => setOpacity(parseFloat(e.target.value))}
-        />
-      </div>
     </div>
   );
 };
