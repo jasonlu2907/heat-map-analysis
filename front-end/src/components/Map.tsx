@@ -3,9 +3,9 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet.heat';
 
 import HeatmapLayer, { Point } from './mapComponents/HeatmapLayer';
-import BorderLayer from './mapComponents/BorderLayer';
 import ChangeMapView from './mapComponents/ChangeMapView';
 import Legend from './mapComponents/Legend';
+import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer';
 
 interface MapProps {
   heatOpacity: number;
@@ -74,8 +74,8 @@ const Map: React.FC<MapProps> = ({ heatOpacity, position }) => {
     <div>
       <MapContainer
         center={position}
-        zoom={13}
-        scrollWheelZoom={false}
+        zoom={12}
+        scrollWheelZoom={true}
         style={{ height: '100vh', width: '100%', zIndex: 10 }}
       >
         <ChangeMapView position={position} animateRef={animateRef} />
@@ -92,7 +92,9 @@ const Map: React.FC<MapProps> = ({ heatOpacity, position }) => {
         {/* Heatmap Layer */}
         <HeatmapLayer points={heatmapData} opacity={heatOpacity} />
 
-        <BorderLayer />
+        {/* Border Layer */}
+        <ZipCodeBorderLayer />
+
         <Legend />
       </MapContainer>
     </div>
