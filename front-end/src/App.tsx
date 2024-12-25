@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import './App.css';
 import Map from './components/Map';
-import Navbar from './components/Navbar';
+import { SidebarProvider } from './components/ui/sidebar';
 import SideBar from './components/SideBar';
 import { Point } from './components/mapComponents/HeatmapLayer';
 
@@ -16,16 +16,16 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className='h-screen relative'>
-      <Navbar />
+    <SidebarProvider>
       <SideBar
         heatOpacity={heatOpacity}
         setHeatOpacity={setHeatOpacity}
         onZipCodeSubmit={handleZipCodeSubmit}
       />
-      <Map heatOpacity={heatOpacity} position={mapCenter} />
-    </div>
+      <div className='flex-grow relative'>
+        <Map heatOpacity={heatOpacity} position={mapCenter} />
+      </div>
+    </SidebarProvider>
   );
 };
-
 export default App;
