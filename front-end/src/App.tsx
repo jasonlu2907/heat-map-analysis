@@ -3,8 +3,10 @@ import { useState } from 'react';
 import './App.css';
 import Map from './components/Map';
 import Navbar from './components/Navbar';
+import { SidebarProvider } from './components/ui/sidebar';
 import SideBar from './components/SideBar';
 import { Point } from './components/mapComponents/HeatmapLayer';
+import { Sidebar } from 'lucide-react';
 
 const App: React.FC = () => {
   // Default to Arlington coordinates
@@ -16,16 +18,16 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className='h-screen relative'>
-      <Navbar />
-      <SideBar
-        heatOpacity={heatOpacity}
-        setHeatOpacity={setHeatOpacity}
-        onZipCodeSubmit={handleZipCodeSubmit}
-      />
-      <Map heatOpacity={heatOpacity} position={mapCenter} />
-    </div>
+    <SidebarProvider>
+        <SideBar
+          heatOpacity={heatOpacity}
+          setHeatOpacity={setHeatOpacity}
+          onZipCodeSubmit={handleZipCodeSubmit}
+        />
+        <div className='flex-grow relative'>
+        <Map heatOpacity={heatOpacity} position={mapCenter} />
+        </div>
+    </SidebarProvider>
   );
 };
-
 export default App;
