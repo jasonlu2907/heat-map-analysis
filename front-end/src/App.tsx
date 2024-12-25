@@ -11,8 +11,8 @@ const App: React.FC = () => {
   const [mapCenter, setMapCenter] = useState<Point>([32.7357, -97.1081]);
   const [heatOpacity, setHeatOpacity] = useState(0.6);
 
-  const handleZipCodeSubmit = (zipCoords: Point) => {
-    setMapCenter(zipCoords);
+  const handleZipCodeSubmit = (zipCoord: Point) => {
+    setMapCenter(zipCoord);
   };
 
   return (

@@ -18,11 +18,11 @@ import { Calendar } from '../ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { format } from 'date-fns';
 
-interface SideBarProps {
+interface FilterFormProps {
   onZipCodeSubmit: (coords: Point) => void;
 }
 
-const FilterForm: React.FC<SideBarProps> = ({ onZipCodeSubmit }) => {
+const FilterForm: React.FC<FilterFormProps> = ({ onZipCodeSubmit }) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [zipCode, setZipCode] = useState('');
