@@ -7,11 +7,11 @@ import {
 } from '../../assets/arlington';
 import { Point } from '../mapComponents/HeatmapLayer';
 
-interface SideBarProps {
+interface FilterFormProps {
   onZipCodeSubmit: (coords: Point) => void;
 }
 
-const FilterForm: React.FC<SideBarProps> = ({ onZipCodeSubmit }) => {
+const FilterForm: React.FC<FilterFormProps> = ({ onZipCodeSubmit }) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [zipCode, setZipCode] = useState('');
