@@ -1,55 +1,142 @@
 import React, { useState } from 'react';
-import 'react-datepicker/dist/react-datepicker.css';
-
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenuButton,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuSubItem,
+  SidebarMenuSub,
+} from './ui/sidebar';
 import FilterForm from './sidebarComponents/FilterForm';
-import { Point } from './mapComponents/HeatmapLayer';
 import OpacitySlider from './sidebarComponents/OpacitySlider';
+import { ChevronDown, BookOpen, Sliders, Filter, Bell } from 'lucide-react'; // Importing icons
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@radix-ui/react-collapsible';
+import { Point } from './mapComponents/HeatmapLayer';
+import Map from './Map';
 
-interface SideBarProps {
-  onZipCodeSubmit: (coords: Point) => void;
+interface FilterSidebarWrapperProps {
+  mapCenter: Point;
+  setMapCenter: (coords: Point) => void;
   heatOpacity: number;
-  setHeatOpacity: (number: number) => void;
+  setHeatOpacity: (opacity: number) => void;
 }
 
-const SideBar: React.FC<SideBarProps> = ({
-  onZipCodeSubmit,
-  heatOpacity,
-  setHeatOpacity,
-}) => {
-  const [showHeatMap, setShowHeatMap] = useState(false);
-    return (
-      <div className='fixed right-0 top-20 flex flex-col bg-gray-100 p-6 w-full sm:w-64 md:w-80 lg:w-96 h-full z-20 shadow-lg opacity-80'>
+const FilterSidebarWrapper: React.FC<FilterSidebarWrapperProps> = ({ mapCenter, setMapCenter, heatOpacity, setHeatOpacity }) => {
+  const [open, setOpen] = useState(false);
+  const [notifications, setNotifications] = useState(0);
+
+  const handleZipCodeSubmit = (zipCoord: Point) => {
+    setMapCenter(zipCoord);
+  };
+
+  const addNotification = () => {
+    setNotifications((prev) => prev + 1);
+  };
+
+  return (
+    <SidebarProvider open={open} onOpenChange={setOpen}>
+      {/* Sidebar Toggle Button */}
+      <button
+        onClick={() => setOpen(!open)}
+        className={`fixed top-24 ${open ? 'left-[16rem]' : 'left-4'} z-50 bg-gray-800 text-white px-3 py-2 rounded-md shadow-lg transition-all duration-300`}
+      >
+        {open ? '←' : '→'}
+      </button>
+
+      {/* Sidebar */}
+      <Sidebar
+        className={`fixed top-0 left-0 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+          open ? 'translate-x-0' : 'translate-x-full'
+        } w-64`}
+      >
         {/* Sidebar Header */}
-        <h2 className='text-lg font-semibold mb-6'>Filter Options</h2>
+        <SidebarHeader>
+          <h2 className="text-lg font-semibold mb-6">Sidebar Menu</h2>
+        </SidebarHeader>
 
-        {/* Filter Form */}
-        <FilterForm onZipCodeSubmit={onZipCodeSubmit} />
+        {/* Sidebar Content */}
+        <SidebarContent>
+          
+            {/* Notifications Button */}
+            <div className="flex items-center">
+              <button className="relative p-2" onClick={addNotification} aria-label="Notifications">
+                <Bell />
+                {notifications > 0 && (
+                  <span className="absolute top-0 left-10 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    {notifications}
+                  </span>
+                )}
+              </button>
+            </div>
+          
 
-        {/* Divider */}
-        <hr className='my-4 border-gray-300' />
+          <SidebarMenu className="space-y-4 mt-6">
+            {/* Filter */}
+            <Collapsible defaultOpen={false} className="group/collapsible">
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton isActive>
+                    <Filter />
+                    <span>Filter</span>
+                    <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    <SidebarMenuSubItem />
+                    <FilterForm onZipCodeSubmit={handleZipCodeSubmit} />
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
 
-        {/* Show Heat Map */}
-        <div className='flex items-center mt-4'>
-          <input
-            type='checkbox'
-            checked={showHeatMap}
-            onChange={(e) => setShowHeatMap(e.target.checked)}
-            className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
-          />
-          <label className='ml-2 block text-md text-gray-700'>
-            Show Heat Map
-          </label>
-        </div>
+            {/* Heatmap Setting Group */}
+            <Collapsible defaultOpen={false} className="group/collapsible">
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton isActive>
+                    <Sliders />
+                    <span>Heatmap Setting</span>
+                    <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    <SidebarMenuSubItem />
+                    <OpacitySlider opacity={heatOpacity} setOpacity={setHeatOpacity} />
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+          
+              <SidebarMenuItem>
+                {/* View Documentation Menu Button */}
+                <SidebarMenuButton asChild isActive>
+                  <a
+                    href="https://docs.google.com/document/d/1V6Ar4Mgx3md5B1XrWJUrkpiUZV7W1wLOLsVxWnYAyUA/edit?tab=t.0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    // className="flex items-center space-x-3"
+                  >
+                    <BookOpen />
+                    <span>View Documentation</span>
+                  </a>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarContent>
+      </Sidebar>
 
-        {/* Divider */}
-        <hr className='my-4 border-gray-300' />
-
-        {/* Opacity Slider */}
-        <div className='mt-4'>
-          <h3 className='text-md font-semibold mb-2'>Heatmap Opacity</h3>
-          <OpacitySlider opacity={heatOpacity} setOpacity={setHeatOpacity} />
-        </div>
+      {/* Heat Map */}
+      <div className="flex-grow relative">
+        <Map heatOpacity={heatOpacity} position={mapCenter} />
       </div>
-    );
+    </SidebarProvider>
+  );
 };
-export default SideBar;
+
+export default FilterSidebarWrapper;
