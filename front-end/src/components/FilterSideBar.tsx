@@ -120,7 +120,6 @@ const FilterSidebarWrapper: React.FC<FilterSidebarWrapperProps> = ({ mapCenter, 
                     href="https://docs.google.com/document/d/1V6Ar4Mgx3md5B1XrWJUrkpiUZV7W1wLOLsVxWnYAyUA/edit?tab=t.0"
                     target="_blank"
                     rel="noopener noreferrer"
-                    // className="flex items-center space-x-3"
                   >
                     <BookOpen />
                     <span>View Documentation</span>
