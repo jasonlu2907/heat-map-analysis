@@ -10,7 +10,7 @@ import {
   SidebarMenuSub,
 } from "./ui/sidebar";
 import FilterForm from "./sidebarComponents/FilterForm";
-import OpacitySlider from "./sidebarComponents/OpacitySlider";
+// import OpacitySlider from "./sidebarComponents/OpacitySlider";
 import { ChevronDown, BookOpen, Sliders, Filter, Bell } from "lucide-react"; // Importing icons
 import {
   Collapsible,
@@ -35,13 +35,21 @@ const FilterSidebarWrapper: React.FC<FilterSidebarWrapperProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState(0);
+  const [clickedZip, setClickedZip] = useState<string | null>(null);
 
-  const handleZipCodeSubmit = (zipCoord: Point) => {
+  const handleZipCodeSubmit = (zipCoord: Point, zipCode:string) => {
     setMapCenter(zipCoord);
+    setClickedZip(zipCode); 
   };
 
   const addNotification = () => {
     setNotifications((prev) => prev + 1);
+  };
+  const DEFAULT_MAP_CENTER: Point = [32.7357, -97.1081]; // Example: Arlington, TX coordinates
+
+  const handleReset = () => {
+    setClickedZip(null); // Reset clickedZip to null
+    setMapCenter(DEFAULT_MAP_CENTER); // Center the map to the default position
   };
 
   return (
@@ -100,10 +108,17 @@ const FilterSidebarWrapper: React.FC<FilterSidebarWrapperProps> = ({
                   <SidebarMenuSub>
                     <FilterForm onZipCodeSubmit={handleZipCodeSubmit} />
                   </SidebarMenuSub>
+                  <SidebarMenuSub>
+                    <button
+                      className="w-full py-2 px-4 bg-gray-800 text-white rounded-md"
+                      onClick={handleReset}
+                    >
+                      Reset
+                    </button>
+                  </SidebarMenuSub>
                 </CollapsibleContent>
               </SidebarMenuItem>
             </Collapsible>
-
             {/* Heatmap Setting Group */}
             <Collapsible defaultOpen={false} className="group/collapsible">
               <SidebarMenuItem>
@@ -116,10 +131,6 @@ const FilterSidebarWrapper: React.FC<FilterSidebarWrapperProps> = ({
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                    <OpacitySlider
-                      opacity={heatOpacity}
-                      setOpacity={setHeatOpacity}
-                    />
                   </SidebarMenuSub>
                 </CollapsibleContent>
               </SidebarMenuItem>
@@ -144,7 +155,10 @@ const FilterSidebarWrapper: React.FC<FilterSidebarWrapperProps> = ({
 
       {/* Heat Map */}
       <div className="flex-grow relative">
-        <Map heatOpacity={heatOpacity} position={mapCenter} />
+        <Map heatOpacity={heatOpacity} position={mapCenter}
+        clickedZip = {clickedZip}
+        setClickedZip = {setClickedZip}
+        />
       </div>
     </SidebarProvider>
   );

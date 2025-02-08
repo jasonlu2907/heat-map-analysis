@@ -2,18 +2,22 @@ import { useState } from 'react';
 import { GeoJSON } from 'react-leaflet';
 import { PathOptions } from 'leaflet';
 
-import { zipCodeGeoJSON } from '../../assets/arlington';
+import {zipCodeGeoJSON} from '../../assets/arlington';
 
-const ZipCodeBorderLayer: React.FC = () => {
+interface ZipCodeBorderLayerProps {
+  clickedZip: string | null;
+  setClickedZip: (zip: string | null) => void;
+}
+
+const ZipCodeBorderLayer: React.FC<ZipCodeBorderLayerProps> = ({clickedZip,setClickedZip}) => {
   const [hoveredZip, setHoveredZip] = useState<string | null>(null);
-  const [clickedZip, setClickedZip] = useState<string | null>(null);
 
   const style = (zipCode: string): PathOptions => ({
     color: '#03254c',
-    weight: hoveredZip === zipCode ? 2.5 : 1.5,
-    opacity: 1,
-    fillOpacity: hoveredZip === zipCode || clickedZip === zipCode ? 0.5 : 0.25,
-    fillColor: '#5d5d5d',
+    weight: clickedZip === zipCode ? 2.5 : 1.5,
+    opacity: clickedZip === zipCode ? 1 : 0.2,
+    fillOpacity: clickedZip === zipCode ? 0.5 : 0,
+    fillColor: clickedZip == zipCode ? '#5d5d5d' : 'transparent',  
   });
 
   return (
@@ -27,23 +31,22 @@ const ZipCodeBorderLayer: React.FC = () => {
             mouseover: () => setHoveredZip(zipEl.properties.ZIPCODE.toString()),
             mouseout: () => setHoveredZip(null),
             click: () => {
-              if (clickedZip !== zipEl.properties.ZIPCODE.toString())
-                setClickedZip(zipEl.properties.ZIPCODE.toString());
-              else setClickedZip(null);
+              const zip = zipEl.properties.ZIPCODE.toString();
+              setClickedZip(clickedZip === zip ? null : zip); // Toggle clicked ZIP code
             },
           }}
-          onEachFeature={(feature, layer) => {
-            //  Add popup with zip code
-            layer.bindPopup(`Zip Code: ${feature.properties.ZIPCODE}`);
+          // onEachFeature={(feature, layer) => {
+          //   //  Add popup with zip code
+          //   layer.bindPopup(`Zip Code: ${feature.properties.ZIPCODE}`);
 
-            // Add tooltip that shows on hover -> tooltip causes the box when clicked
-            // layer.bindTooltip(`${feature.properties.ZIPCODE}`);
+          //   // Add tooltip that shows on hover -> tooltip causes the box when clicked
+          //   // layer.bindTooltip(`${feature.properties.ZIPCODE}`);
 
-            // Add click handler
-            layer.on('click', () => {
-              console.log(`Clicked zip code: ${feature.properties.ZIPCODE}`);
-            });
-          }}
+          //   // Add click handler
+          //   layer.on('click', () => {
+          //     console.log(`Clicked zip code: ${feature.properties.ZIPCODE}`);
+          //   });
+          // }}
         />
       ))}
     </div>

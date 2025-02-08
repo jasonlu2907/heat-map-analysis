@@ -19,7 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { format } from 'date-fns';
 
 interface FilterFormProps {
-  onZipCodeSubmit: (coords: Point) => void;
+  onZipCodeSubmit: (coords: Point,zipCode: string) => void;
 }
 
 const FilterForm: React.FC<FilterFormProps> = ({ onZipCodeSubmit }) => {
@@ -31,7 +31,7 @@ const FilterForm: React.FC<FilterFormProps> = ({ onZipCodeSubmit }) => {
     e.preventDefault();
 
     const zipCoord: Point = ARLINGTON_ZIP_COORD[zipCode];
-    onZipCodeSubmit(zipCoord);
+    onZipCodeSubmit(zipCoord, zipCode);
   };
 
   return (
