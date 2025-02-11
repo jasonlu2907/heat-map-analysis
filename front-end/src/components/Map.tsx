@@ -1,18 +1,21 @@
 import React, { useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet.heat';
 
 import HeatmapLayer, { Point } from './mapComponents/HeatmapLayer';
 import ChangeMapView from './mapComponents/ChangeMapView';
 import Legend from './mapComponents/Legend';
 import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer';
+import BorderLayer from './mapComponents/BorderLayer';
 
 interface MapProps {
   heatOpacity: number;
   position: Point;
+  clickedZip: string | null;
+  setClickedZip: (zip: string | null) => void;
 }
 
-const Map: React.FC<MapProps> = ({ heatOpacity, position }) => {
+const Map: React.FC<MapProps> = ({ heatOpacity, position,clickedZip,setClickedZip }) => {
   const animateRef = useRef(true);
 
   // Large, predefined dataset for the heatmap
@@ -76,6 +79,7 @@ const Map: React.FC<MapProps> = ({ heatOpacity, position }) => {
         center={position}
         zoom={12}
         scrollWheelZoom={true}
+        zoomControl = {false} 
         style={{ height: '100vh', width: '100%', zIndex: 10 }}
       >
         <ChangeMapView position={position} animateRef={animateRef} />
@@ -83,18 +87,24 @@ const Map: React.FC<MapProps> = ({ heatOpacity, position }) => {
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Marker position={position}>
+        {/* <Marker position={position}>
           <Popup>
             A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>
-        </Marker>
+        </Marker> */}
+        {/* Custom Zoom Control in Bottom Right */}
+        <ZoomControl position="bottomright" />
 
-        {/* Heatmap Layer */}
-        <HeatmapLayer points={heatmapData} opacity={heatOpacity} />
 
-        {/* Border Layer */}
-        <ZipCodeBorderLayer />
+        {/* Outer Border Layer */}
+        <BorderLayer clickedZip={clickedZip} />
 
+        {/* Zipcode Border Layer */}
+        <ZipCodeBorderLayer clickedZip={clickedZip} setClickedZip={setClickedZip} />
+
+        {/* Heatmap Layer
+        <HeatmapLayer points={heatmapData} opacity={heatOpacity} /> */}
+        
         <Legend />
       </MapContainer>
     </div>
