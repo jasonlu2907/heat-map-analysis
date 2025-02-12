@@ -9,6 +9,7 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
 } from './ui/sidebar';
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import FilterForm from './sidebarComponents/FilterForm';
 import OpacitySlider from './sidebarComponents/OpacitySlider';
 import { ChevronDown, BookOpen, Sliders, Filter, Bell } from 'lucide-react'; // Importing icons
@@ -34,14 +35,23 @@ const FilterSidebarWrapper: React.FC<FilterSidebarWrapperProps> = ({
   setHeatOpacity,
 }) => {
   const [open, setOpen] = useState(false);
-  const [notifications, setNotifications] = useState(0);
+  const [notifications, setNotifications] = useState([
+    "Fire alert in zip code 76006 🚒",
+    "Fire risk score 8 at UTA 🚨",
+    "Alert: Current risk score is 9 at <300,200> and this is a long notification."
+  ]);
+  //const [notifications, setNotifications] = useState(0);
+
+  const removeNotification = (indexToRemove: number) => {
+    setNotifications(notifications.filter((_, index) => index !== indexToRemove));
+  };
 
   const handleZipCodeSubmit = (zipCoord: Point) => {
     setMapCenter(zipCoord);
   };
 
   const addNotification = () => {
-    setNotifications((prev) => prev + 1);
+   
   };
 
   return (
@@ -71,18 +81,41 @@ const FilterSidebarWrapper: React.FC<FilterSidebarWrapperProps> = ({
         <SidebarContent>
           {/* Notifications Button */}
           <div className='flex items-center'>
-            <button
-              className='relative p-2'
-              onClick={addNotification}
-              aria-label='Notifications'
-            >
-              <Bell />
-              {notifications > 0 && (
-                <span className='absolute top-0 left-10 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center'>
-                  {notifications}
-                </span>
-              )}
-            </button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="relative p-2" aria-label="Notifications">
+                <Bell className="w-6 h-6" />
+                {notifications.length > 0 && (
+                  <span className="absolute top-0 left-7 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    {notifications.length}
+                  </span>
+                )}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-4 shadow-md bg-white border rounded-md">
+              <h4 className="text-sm font-medium">Notifications</h4>
+              {notifications.length > 0 ? (
+              <ul className="space-y-2">
+                  {notifications.map((notification, index) => (
+                    <li
+                    key={index}
+                    className="flex justify-between items-center p-2 bg-gray-100 rounded-md text-sm cursor-pointer hover:bg-gray-200 transition"
+                  >
+                    <span>{notification}</span>
+                    <button
+                      onClick={() => removeNotification(index)}
+                      className="text-gray-400 text-s font-bold hover:text-gray-600"
+                    >
+                      X
+                    </button>
+                  </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-xs text-gray-600">No new notifications</p>
+            )}
+            </PopoverContent>
+          </Popover>
           </div>
 
           <SidebarMenu className='mt-4'>
