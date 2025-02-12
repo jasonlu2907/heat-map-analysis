@@ -4,35 +4,38 @@ import { PathOptions } from 'leaflet';
 
 import { arlingtonGeoJSON } from '../../assets/arlington';
 
-const BorderLayer = () => {
-  const [isHovered, setIsHovered] = useState(false);
 
+interface BorderLayerProps {
+  clickedZip: string | null; // Pass the currently selected ZIP code
+}
+
+const BorderLayer: React.FC<BorderLayerProps> = ({ clickedZip }) => {
   const style = (): PathOptions => ({
-    color: 'black', // #187bcd #2a9df4
-    weight: isHovered ? 2 : 1,
-    opacity: 1,
-    // fillOpacity: isHovered ? 0.7 : 0.55,
-  });
+    color: '#03254c', // Border color
+    weight: clickedZip ? 0 : 2, // Hide the Arlington border if a ZIP code is selected
+    opacity: clickedZip ? 0 : 0.8, // Hide the Arlington border if a ZIP code is selected
+    fillOpacity: 0, // Keep the inside of the border transparent
+  })
 
-  const eventHandlers = {
-    mouseover: () => {
-      setIsHovered(true);
-    },
-    mouseout: () => {
-      setIsHovered(false);
-    },
-  };
+  // const eventHandlers = {
+  //   mouseover: () => {
+  //     setIsHovered(true);
+  //   },
+  //   mouseout: () => {
+  //     setIsHovered(false);
+  //   },
+  // };
 
   return (
     <GeoJSON
       data={arlingtonGeoJSON as GeoJSON.GeoJsonObject}
       style={style}
-      eventHandlers={eventHandlers}
-      onEachFeature={(feature, layer) => {
-        if (feature.properties && feature.properties.popupContent) {
-          layer.bindPopup(feature.properties.popupContent);
-        }
-      }}
+      // eventHandlers={eventHandlers}
+      // onEachFeature={(feature, layer) => {
+      //   if (feature.properties && feature.properties.popupContent) {
+      //     layer.bindPopup(feature.properties.popupContent);
+      //   }
+      // }}
     />
   );
 };
