@@ -7,10 +7,9 @@ import L from 'leaflet';
 export type Point = [number, number, number?]; // [latitude, longitude, optional intensity]
 interface HeatmapLayerProps {
   points: Point[];
-  opacity: number;
 }
 
-const HeatmapLayer: React.FC<HeatmapLayerProps> = ({ points, opacity }) => {
+const HeatmapLayer: React.FC<HeatmapLayerProps> = ({ points }) => {
   const map = useMap();
 
   useEffect(() => {
@@ -19,14 +18,13 @@ const HeatmapLayer: React.FC<HeatmapLayerProps> = ({ points, opacity }) => {
       radius: 20,
       blur: 15,
       maxZoom: 17,
-      opacity: opacity,
     }).addTo(map);
 
     // Cleanup: Remove the heat layer on unmount or when options change
     return () => {
       map.removeLayer(heatLayer);
     };
-  }, [map, points, opacity]);
+  }, [map, points]);
 
   return null;
 };
