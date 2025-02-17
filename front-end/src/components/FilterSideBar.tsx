@@ -11,7 +11,6 @@ import {
 } from './ui/sidebar';
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import FilterForm from './sidebarComponents/FilterForm';
-import OpacitySlider from './sidebarComponents/OpacitySlider';
 import { ChevronDown, BookOpen, Sliders, Filter, Bell } from 'lucide-react'; // Importing icons
 import {
   Collapsible,
@@ -42,6 +41,7 @@ const FilterSidebarWrapper: React.FC<FilterSidebarWrapperProps> = ({
     "Alert: Current risk score is 9 at <300,200> and this is a long notification."
   ]);
   //const [notifications, setNotifications] = useState(0);
+  const [clickedZip, setClickedZip] = useState<string | null>(null);
 
   const removeNotification = (indexToRemove: number) => {
     setNotifications(notifications.filter((_, index) => index !== indexToRemove));
