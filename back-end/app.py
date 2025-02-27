@@ -27,6 +27,14 @@ client = MongoClient(mongo_uri)
 
 OPENWEATHER_API = os.getenv('OPENWEATHER_API')
 
+# Define error messages
+error_messages = {
+    400: "Bad Request - Invalid/Missing parameters",
+    401: "Unauthorized - Invalid API key",
+    404: "Not Found - Resource not available",
+    429: "Too Many Requests - Rate limit exceeded"
+}
+
 @app.route('/')
 def home():
     # return send_from_directory(app.static_folder, "index.html")
@@ -45,6 +53,13 @@ def get_current_weather():
         }
         
         response = requests.get(url, params=params)
+        if response.status_code != 200:
+            error_message = error_messages.get(
+                response.status_code, 
+                f"Weather API error: {response.status_code}"
+            )
+            return {"error": error_message}, response.status_code
+        
         weather_data = response.json()
         
         return jsonify(weather_data)  # Ensure Flask returns JSON format
