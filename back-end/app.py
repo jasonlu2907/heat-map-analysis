@@ -1,5 +1,6 @@
 from flask import Flask, send_from_directory
 from flask_pymongo import PyMongo
+from flask_cors import CORS
 from pymongo import MongoClient
 import os
 import requests
@@ -8,6 +9,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 app = Flask(__name__, static_folder="../front-end/dist", static_url_path="/")
+CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
+
 
 # Load environment variables
 load_dotenv()
@@ -44,10 +47,16 @@ def get_current_weather():
         response = requests.get(url, params=params)
         weather_data = response.json()
         
-        return weather_data
-        
+        return jsonify(weather_data)  # Ensure Flask returns JSON format
+
     except Exception as e:
-        return {"error": str(e)}, 500
+
+        return jsonify({"error": str(e)}), 500
+
+    #     return weather_data
+        
+    # except Exception as e:
+    #     return {"error": str(e)}, 500
     
 # Play ground with DB
 @app.route('/create-user', methods=['POST'])
