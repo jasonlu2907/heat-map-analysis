@@ -12,8 +12,8 @@ interface SideBarProps {
 
 const SideBar: React.FC<SideBarProps> = ({
   onZipCodeSubmit,
-  heatOpacity,
-  setHeatOpacity,
+  // heatOpacity,
+  // setHeatOpacity,
 }) => {
   const [showHeatMap, setShowHeatMap] = useState(false);
   // Filter submission function
@@ -58,7 +58,6 @@ const SideBar: React.FC<SideBarProps> = ({
 
       {/* Divider */}
       <hr className='my-4 border-gray-300' />
-
     </div>
   );
 };

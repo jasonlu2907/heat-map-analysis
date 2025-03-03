@@ -1,23 +1,26 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { GeoJSON } from 'react-leaflet';
 import { PathOptions } from 'leaflet';
 
-import {zipCodeGeoJSON} from '../../assets/arlington';
+import { zipCodeGeoJSON } from '../../assets/arlington';
 
 interface ZipCodeBorderLayerProps {
   clickedZip: string | null;
   setClickedZip: (zip: string | null) => void;
 }
 
-const ZipCodeBorderLayer: React.FC<ZipCodeBorderLayerProps> = ({clickedZip,setClickedZip}) => {
-  const [hoveredZip, setHoveredZip] = useState<string | null>(null);
+const ZipCodeBorderLayer: React.FC<ZipCodeBorderLayerProps> = ({
+  clickedZip,
+  setClickedZip,
+}) => {
+  // const [hoveredZip, setHoveredZip] = useState<string | null>(null);
 
   const style = (zipCode: string): PathOptions => ({
     color: '#03254c',
     weight: clickedZip === zipCode ? 2.5 : 1.5,
     opacity: clickedZip === zipCode ? 1 : 0.2,
     fillOpacity: clickedZip === zipCode ? 0.5 : 0,
-    fillColor: clickedZip == zipCode ? '#5d5d5d' : 'transparent',  
+    fillColor: clickedZip == zipCode ? '#5d5d5d' : 'transparent',
   });
 
   return (
@@ -28,8 +31,8 @@ const ZipCodeBorderLayer: React.FC<ZipCodeBorderLayerProps> = ({clickedZip,setCl
           data={zipEl as GeoJSON.GeoJsonObject}
           style={() => style(zipEl.properties.ZIPCODE.toString())}
           eventHandlers={{
-            mouseover: () => setHoveredZip(zipEl.properties.ZIPCODE.toString()),
-            mouseout: () => setHoveredZip(null),
+            // mouseover: () => setHoveredZip(zipEl.properties.ZIPCODE.toString()),
+            // mouseout: () => setHoveredZip(null),
             click: () => {
               const zip = zipEl.properties.ZIPCODE.toString();
               setClickedZip(clickedZip === zip ? null : zip); // Toggle clicked ZIP code
