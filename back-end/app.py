@@ -1,10 +1,12 @@
-from flask import Flask, send_from_directory, request, jsonify
+from flask import Flask, send_from_directory
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 from pymongo import MongoClient
 import os
-import pandas as pd
-from autogluon.timeseries import TimeSeriesPredictor, TimeSeriesDataFrame
+import requests
+from flask import jsonify
+from datetime import datetime
+from dotenv import load_dotenv
 
 app = Flask(__name__, static_folder="../front-end/dist", static_url_path="/")
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
@@ -14,7 +16,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
 load_dotenv()
 
 # Use environment variable for MongoDB URI (or fallback to a default local URI)
-mongo_uri = os.getenv("MONGO_URI", "mongodb+srv://hienqd:DD50XKm29wUgg67q@afram.0uuzz.mongodb.net/test?retryWrites=true&w=majority")
+mongo_uri = os.getenv("MONGO_URI")
 app.config["MONGO_URI"] = mongo_uri
 
 # Initialize Flask-PyMongo
@@ -103,4 +105,5 @@ def get_users():
     
 
 if __name__ == "__main__":
+    """ checks if the script is being run directly (not imported as a module) meaning to run by python app.py"""
     app.run(port=5173, debug=False)
