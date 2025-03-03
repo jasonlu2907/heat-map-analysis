@@ -1,13 +1,13 @@
 import React, { useRef } from 'react';
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet.heat';
-
 import HeatmapLayer, { Point } from './mapComponents/HeatmapLayer';
 import ChangeMapView from './mapComponents/ChangeMapView';
 import Legend from './mapComponents/Legend';
 import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer';
 import BorderLayer from './mapComponents/BorderLayer';
 import heatmapDatas from '../../../back-end/heatmapData.ts'
+import WeatherOverlay from './mapComponents/WeatherOverlay.tsx';
 
 interface MapProps {
   heatOpacity: number;
@@ -26,6 +26,7 @@ const Map: React.FC<MapProps> = ({ position,clickedZip,setClickedZip }) => {
 
   return (
     <div>
+      <WeatherOverlay />
       <MapContainer
         center={position}
         zoom={12}

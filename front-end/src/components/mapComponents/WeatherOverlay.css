@@ -1,0 +1,25 @@
+.weather-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(107, 164, 228, 0.7);
+    color: white;
+    font-size: 16px; 
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    z-index: 1000; /* Ensures it stays above the map */
+
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers items horizontally */
+    justify-content: center; /* Centers content vertically */
+  }
+
+  .weather-overlay img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  
