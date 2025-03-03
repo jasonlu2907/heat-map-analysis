@@ -1,0 +1,22 @@
+backend:
+    functions:
+        - entry: app.py
+          handler: handler
+          name: function-flask
+          path: .
+          type: httpServer
+    language:
+        name: js
+    path: ./back-end
+frontend:
+    path: front-end
+    publish: dist
+    scripts:
+        build:
+            - npm run build
+        deploy:
+            - npm install
+    subdomain: heat-map-analysis
+name: heat-map-analysis
+region: us-east-1
+yamlVersion: 2
