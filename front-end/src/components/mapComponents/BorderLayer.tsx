@@ -1,5 +1,4 @@
 import { GeoJSON } from 'react-leaflet';
-import { useState } from 'react';
 import { PathOptions } from 'leaflet';
 
 import { arlingtonGeoJSON } from '../../assets/arlington';
@@ -17,25 +16,11 @@ const BorderLayer: React.FC<BorderLayerProps> = ({ clickedZip }) => {
     fillOpacity: 0, // Keep the inside of the border transparent
   })
 
-  // const eventHandlers = {
-  //   mouseover: () => {
-  //     setIsHovered(true);
-  //   },
-  //   mouseout: () => {
-  //     setIsHovered(false);
-  //   },
-  // };
 
   return (
     <GeoJSON
       data={arlingtonGeoJSON as GeoJSON.GeoJsonObject}
       style={style}
-      // eventHandlers={eventHandlers}
-      // onEachFeature={(feature, layer) => {
-      //   if (feature.properties && feature.properties.popupContent) {
-      //     layer.bindPopup(feature.properties.popupContent);
-      //   }
-      // }}
     />
   );
 };

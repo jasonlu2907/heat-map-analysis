@@ -12,25 +12,8 @@ interface SideBarProps {
 
 const SideBar: React.FC<SideBarProps> = ({
   onZipCodeSubmit,
-  heatOpacity,
-  setHeatOpacity,
 }) => {
   const [showHeatMap, setShowHeatMap] = useState(false);
-  // Filter submission function
-
-  // const onFilterSubmit = async (filters: Filters) => {
-  //   try {
-  //     const queryParams = new URLSearchParams(filters).toString();
-  //     const response = await fetch(`http://localhost:3000/fire-incidents?${queryParams}`);
-  //     const data = await response.json();
-
-  //     setFilteredData(data);
-  //     console.log('Filtered Data:', data);
-  //     // Update your components with the mock data
-  //   } catch (error) {
-  //     console.error('Error fetching fire incidents:', error);
-  //   }
-  // };
 
   return (
     <div className='fixed right-0 top-20 flex flex-col bg-gray-100 p-6 w-full sm:w-64 md:w-80 lg:w-96 h-full z-20 shadow-lg opacity-80'>
