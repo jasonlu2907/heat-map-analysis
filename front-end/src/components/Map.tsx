@@ -8,6 +8,7 @@ import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer';
 import BorderLayer from './mapComponents/BorderLayer';
 import heatmapDatas from '../../../back-end/heatmapData.ts'
 import WeatherOverlay from './mapComponents/WeatherOverlay.tsx';
+import FilterForm from './sidebarComponents/FilterForm.tsx';
 
 interface MapProps {
   position: Point;
