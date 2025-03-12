@@ -15,7 +15,15 @@ import {
   PopoverContent,
 } from '@/components/ui/popover';
 import FilterForm from './sidebarComponents/FilterForm';
-import { ChevronDown, BookOpen, Sliders, Filter, Bell } from 'lucide-react'; // Importing icons
+import {
+  ChevronDown,
+  BookOpen,
+  Sliders,
+  Filter,
+  Bell,
+  Menu,
+  X,
+} from 'lucide-react'; // Importing icons
 import {
   Collapsible,
   CollapsibleTrigger,
@@ -23,6 +31,7 @@ import {
 } from '@radix-ui/react-collapsible';
 import { Point } from './mapComponents/HeatmapLayer';
 import Map from './Map';
+import { Switch } from '@radix-ui/react-switch';
 
 interface FilterSidebarWrapperProps {
   mapCenter: Point;
