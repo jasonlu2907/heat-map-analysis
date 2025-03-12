@@ -6,9 +6,8 @@ import ChangeMapView from './mapComponents/ChangeMapView';
 import Legend from './mapComponents/Legend';
 import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer';
 import BorderLayer from './mapComponents/BorderLayer';
-import heatmapDatas from '../../../back-end/heatmapData.ts'
+import heatmapDatas from '../../../back-end/heatmapData.ts';
 import WeatherOverlay from './mapComponents/WeatherOverlay.tsx';
-import FilterForm from './sidebarComponents/FilterForm.tsx';
 
 interface MapProps {
   position: Point;
@@ -18,8 +17,13 @@ interface MapProps {
   showZipBorders: boolean;
 }
 
-const Map: React.FC<MapProps> = ({ position,clickedZip,setClickedZip,showHeatmap,showZipBorders }) => {
-
+const Map: React.FC<MapProps> = ({
+  position,
+  clickedZip,
+  setClickedZip,
+  showHeatmap,
+  showZipBorders,
+}) => {
   const animateRef = useRef(true);
   const heatmapData: Point[] = heatmapDatas;
 
@@ -30,7 +34,7 @@ const Map: React.FC<MapProps> = ({ position,clickedZip,setClickedZip,showHeatmap
         center={position}
         zoom={12}
         scrollWheelZoom={true}
-        zoomControl = {false} 
+        zoomControl={false}
         style={{ height: '100vh', width: '100%', zIndex: 10 }}
         key={position.toString()} // Add key to force re-render on position change
       >
@@ -40,17 +44,27 @@ const Map: React.FC<MapProps> = ({ position,clickedZip,setClickedZip,showHeatmap
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        <ZoomControl position="bottomright" />
+        <ZoomControl position='bottomright' />
 
         {/* Outer Border Layer */}
         <BorderLayer clickedZip={clickedZip} />
 
         {/* Heatmap Layer - Only render if showHeatmap is true */}
-        {showHeatmap && <HeatmapLayer points={heatmapData} clickedZip={clickedZip} showHeatmap={showHeatmap} />}
+        {showHeatmap && (
+          <HeatmapLayer
+            points={heatmapData}
+            clickedZip={clickedZip}
+            showHeatmap={showHeatmap}
+          />
+        )}
 
         {/* ZIP Code Borders - Only render if showZipBorders is true */}
-        {showZipBorders && <ZipCodeBorderLayer clickedZip={clickedZip} setClickedZip={setClickedZip} />}
-
+        {showZipBorders && (
+          <ZipCodeBorderLayer
+            clickedZip={clickedZip}
+            setClickedZip={setClickedZip}
+          />
+        )}
 
         <Legend />
       </MapContainer>
