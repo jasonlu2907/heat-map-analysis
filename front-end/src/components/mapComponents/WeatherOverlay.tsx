@@ -13,7 +13,7 @@ const WeatherOverlay: React.FC = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/current") // Ensure this matches your backend
+    fetch("https://heatmap-analysis.onrender.com/current") // Ensure this matches your backend
       .then((response) => response.json())
       .then((data) => {
         console.log("Weather API Response:", data); // Debugging: check response in console
