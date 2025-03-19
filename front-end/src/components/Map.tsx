@@ -4,10 +4,11 @@ import 'leaflet.heat';
 import HeatmapLayer, { Point } from './mapComponents/HeatmapLayer';
 import ChangeMapView from './mapComponents/ChangeMapView';
 import Legend from './mapComponents/Legend';
-import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer';
+// import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer';
 import BorderLayer from './mapComponents/BorderLayer';
 import heatmapDatas from '../../../back-end/heatmapData.ts';
 import WeatherOverlay from './mapComponents/WeatherOverlay.tsx';
+import GeoGridLayer from "./mapComponents/GeoGridLayer"; 
 
 interface MapProps {
   position: Point;
@@ -20,9 +21,9 @@ interface MapProps {
 const Map: React.FC<MapProps> = ({
   position,
   clickedZip,
-  setClickedZip,
+  // setClickedZip,
   showHeatmap,
-  showZipBorders,
+  // showZipBorders,
 }) => {
   const animateRef = useRef(true);
   const heatmapData: Point[] = heatmapDatas;
@@ -49,6 +50,9 @@ const Map: React.FC<MapProps> = ({
         {/* Outer Border Layer */}
         <BorderLayer clickedZip={clickedZip} />
 
+        {/* 🔥 Add GeoGridLayer for Risk Zones */}
+        <GeoGridLayer />
+
         {/* Heatmap Layer - Only render if showHeatmap is true */}
         {showHeatmap && (
           <HeatmapLayer
@@ -59,12 +63,12 @@ const Map: React.FC<MapProps> = ({
         )}
 
         {/* ZIP Code Borders - Only render if showZipBorders is true */}
-        {showZipBorders && (
+        {/* {showZipBorders && (
           <ZipCodeBorderLayer
             clickedZip={clickedZip}
             setClickedZip={setClickedZip}
           />
-        )}
+        )} */}
 
         <Legend />
       </MapContainer>
