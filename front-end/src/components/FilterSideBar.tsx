@@ -31,7 +31,7 @@ import {
 } from '@radix-ui/react-collapsible';
 import { Point } from './mapComponents/HeatmapLayer';
 import Map from './Map';
-import { Switch } from '@radix-ui/react-switch';
+import { Switch } from '@/components/ui/switch';
 
 interface FilterSidebarWrapperProps {
   mapCenter: Point;

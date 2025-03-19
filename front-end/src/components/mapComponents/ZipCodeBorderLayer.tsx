@@ -13,7 +13,7 @@ const ZipCodeBorderLayer: React.FC<ZipCodeBorderLayerProps> = ({
   clickedZip,
   setClickedZip,
 }) => {
-  const [hoveredZip, setHoveredZip] = useState<string | null>(null);
+  // const [hoveredZip, setHoveredZip] = useState<string | null>(null);
   const [showZipBorders, setShowZipBorders] = useState(true); // Default: ON
 
   const style = (zipCode: string): PathOptions => ({
