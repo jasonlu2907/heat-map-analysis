@@ -8,7 +8,8 @@ import Legend from './mapComponents/Legend';
 import BorderLayer from './mapComponents/BorderLayer';
 import heatmapDatas from '../../../back-end/heatmapData.ts';
 import WeatherOverlay from './mapComponents/WeatherOverlay.tsx';
-import GeoGridLayer from "./mapComponents/GeoGridLayer"; 
+import GeoGridLayer from './mapComponents/GeoGridLayer';
+import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer.tsx';
 
 interface MapProps {
   position: Point;
@@ -21,9 +22,9 @@ interface MapProps {
 const Map: React.FC<MapProps> = ({
   position,
   clickedZip,
-  // setClickedZip,
+  setClickedZip,
   showHeatmap,
-  // showZipBorders,
+  showZipBorders,
 }) => {
   const animateRef = useRef(true);
   const heatmapData: Point[] = heatmapDatas;
@@ -63,12 +64,12 @@ const Map: React.FC<MapProps> = ({
         )}
 
         {/* ZIP Code Borders - Only render if showZipBorders is true */}
-        {/* {showZipBorders && (
+        {showZipBorders && (
           <ZipCodeBorderLayer
             clickedZip={clickedZip}
             setClickedZip={setClickedZip}
           />
-        )} */}
+        )}
 
         <Legend />
       </MapContainer>
