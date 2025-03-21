@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Polygon, Tooltip, useMap } from "react-leaflet";
+import { Polygon, Popup, useMap } from "react-leaflet";
 
 // Function to determine color based on risk score
 const getColor = (risk: number) => {
-  return risk > 0.8 ? "red" :
-         risk > 0.6 ? "orange" :
-         risk > 0.4 ? "yellow":
-         risk > 0.2 ? "green" : "blue";
+  return risk > 0.8 ? "rgba(221, 40, 40, 0.95)" :
+         risk > 0.6 ? "rgba(255, 130, 24, 0.95)" :
+         risk > 0.4 ? "rgba(245, 245, 29, 0.95)" :
+         risk > 0.2 ? "rgba(32, 221, 28, 0.95)" :
+         risk > 0.1 ? "rgba(67, 89, 242, 0.95)" : 
+                      "rgba(0, 0, 0, 0)";
 };
 
 const GeoGridLayer: React.FC = () => {
   const [gridData, setGridData] = useState<any[]>([]);
   const [riskValues, setRiskValues] = useState<number[]>([]);
+  const [selectedPolygon, setSelectedPolygon] = useState<number | null>(null); // Track clicked polygon
   const map = useMap();
 
   useEffect(() => {
@@ -44,10 +47,15 @@ const GeoGridLayer: React.FC = () => {
             key={index}
             positions={coordinates}
             pathOptions={{ color: getColor(risk), fillOpacity: 0.6 }}
+            eventHandlers={{
+              click: () => setSelectedPolygon(index), // Set the clicked polygon
+            }}
           >
-            <Tooltip sticky>
-              <strong>Risk Score:</strong> {risk.toFixed(2)}
-            </Tooltip>
+            {selectedPolygon === index && (
+              <Popup>
+                <strong>Risk Score:</strong> {risk.toFixed(2)}
+              </Popup>
+            )}
           </Polygon>
         );
       })}

@@ -15,6 +15,11 @@
     flex-direction: column;
     align-items: center; /* Centers items horizontally */
     justify-content: center; /* Centers content vertically */
+
+    max-width: 180px; /* Prevent it from stretching */
+    min-width: 120px; /* Ensure it stays readable */
+    width: auto;
+    height: auto;
   }
 
   .weather-overlay img {
