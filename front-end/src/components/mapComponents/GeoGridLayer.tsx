@@ -18,7 +18,7 @@ const GeoGridLayer: React.FC = () => {
   const map = useMap();
 
   useEffect(() => {
-    fetch("/arlington_grid_no_risk.geojson") 
+    fetch("/src/assets/arlington_grid_no_risk.geojson") 
       .then((response) => response.json())
       .then((data) => {
         setGridData(data.features);
