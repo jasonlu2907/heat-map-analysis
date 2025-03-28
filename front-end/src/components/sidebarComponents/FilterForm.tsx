@@ -1,19 +1,8 @@
-import React, { useState } from 'react';
-
-import {
-  ARLINGTON_ZIP_CODES,
-  ARLINGTON_ZIP_COORD,
-} from '../../assets/arlington';
-
+import React, { useState, useEffect } from 'react';
+import {ARLINGTON_ZIP_CODES,ARLINGTON_ZIP_COORD,} from '../../assets/arlington';
 import { Point } from '../mapComponents/HeatmapLayer';
 import { Button } from '../ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select';
+import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from '../ui/select';
 import { Calendar } from '../ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { format } from 'date-fns';
@@ -25,11 +14,21 @@ interface FilterFormProps {
 const FilterForm: React.FC<FilterFormProps> = ({ onZipCodeSubmit }) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [zipCode, setZipCode] = useState('');
+  const [zipCode, setZipCode] = useState<string>('');
+
+  // Listen for reset event and clear the ZIP code selection
+  useEffect(() => {
+  const handleReset = () => {
+    setZipCode('');
+  };
+
+  document.addEventListener("resetZipCode", handleReset);
+  return () => document.removeEventListener("resetZipCode", handleReset);
+}, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     const zipCoord: Point = ARLINGTON_ZIP_COORD[zipCode];
     onZipCodeSubmit(zipCoord, zipCode);
   };

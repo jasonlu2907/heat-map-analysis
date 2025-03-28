@@ -1,26 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GeoJSON } from 'react-leaflet';
 import { PathOptions } from 'leaflet';
 
-import {zipCodeGeoJSON} from '../../assets/arlington';
+import { zipCodeGeoJSON } from '../../assets/arlington';
 
 interface ZipCodeBorderLayerProps {
   clickedZip: string | null;
   setClickedZip: (zip: string | null) => void;
 }
 
-const ZipCodeBorderLayer: React.FC<ZipCodeBorderLayerProps> = ({clickedZip,setClickedZip}) => {
-  const [hoveredZip, setHoveredZip] = useState<string | null>(null);
+const ZipCodeBorderLayer: React.FC<ZipCodeBorderLayerProps> = ({
+  clickedZip,
+  setClickedZip,
+}) => {
+  // const [hoveredZip, setHoveredZip] = useState<string | null>(null);
+  const [showZipBorders, setShowZipBorders] = useState(true); // Default: ON
 
   const style = (zipCode: string): PathOptions => ({
-    color: '#03254c',
-    weight: clickedZip === zipCode ? 2.5 : 1.5,
-    opacity: clickedZip === zipCode ? 1 : 0.2,
-    fillOpacity: clickedZip === zipCode ? 0.5 : 0,
-    fillColor: clickedZip == zipCode ? '#5d5d5d' : 'transparent',  
+    color: clickedZip === zipCode ? '#FF0000' : '#03254c', // Red border for selected ZIP, blue for others
+    weight: clickedZip === zipCode ? 3 : 1.5,
+    opacity: clickedZip === zipCode ? 1 : 0.5,
+    fillOpacity: 0, // Remove fill color
+    fillColor: 'transparent',
   });
 
-  return (
+  // Listen for reset event and clear the selected ZIP code
+  useEffect(() => {
+    const handleReset = () => {
+      setClickedZip(null);
+    };
+
+    document.addEventListener('resetZipCode', handleReset);
+    return () => document.removeEventListener('resetZipCode', handleReset);
+  }, [setClickedZip]);
+
+  return showZipBorders ? (
     <div>
       {zipCodeGeoJSON['features'].map((zipEl) => (
         <GeoJSON
@@ -28,29 +42,17 @@ const ZipCodeBorderLayer: React.FC<ZipCodeBorderLayerProps> = ({clickedZip,setCl
           data={zipEl as GeoJSON.GeoJsonObject}
           style={() => style(zipEl.properties.ZIPCODE.toString())}
           eventHandlers={{
-            mouseover: () => setHoveredZip(zipEl.properties.ZIPCODE.toString()),
-            mouseout: () => setHoveredZip(null),
+            // mouseover: () => setHoveredZip(zipEl.properties.ZIPCODE.toString()),
+            // mouseout: () => setHoveredZip(null),
             click: () => {
               const zip = zipEl.properties.ZIPCODE.toString();
               setClickedZip(clickedZip === zip ? null : zip); // Toggle clicked ZIP code
             },
           }}
-          // onEachFeature={(feature, layer) => {
-          //   //  Add popup with zip code
-          //   layer.bindPopup(`Zip Code: ${feature.properties.ZIPCODE}`);
-
-          //   // Add tooltip that shows on hover -> tooltip causes the box when clicked
-          //   // layer.bindTooltip(`${feature.properties.ZIPCODE}`);
-
-          //   // Add click handler
-          //   layer.on('click', () => {
-          //     console.log(`Clicked zip code: ${feature.properties.ZIPCODE}`);
-          //   });
-          // }}
         />
       ))}
     </div>
-  );
+  ) : null;
 };
 
 export default ZipCodeBorderLayer;
