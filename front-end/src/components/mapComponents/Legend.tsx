@@ -22,7 +22,7 @@ const Legend = () => {
 
     legend.onAdd = () => {
       const div = L.DomUtil.create('div', 'info legend');
-      const grades = [0, 2, 4, 6, 8, 10];
+      const grades = [1, 2, 4, 6, 8, 10];
       const labels: string[] = [];
 
       for (let i = 0; i < grades.length - 1; i++) {

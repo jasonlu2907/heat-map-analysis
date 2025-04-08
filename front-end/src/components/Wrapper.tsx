@@ -11,9 +11,9 @@ interface WrapperProps {
 
 const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
   const [notifications, setNotifications] = useState([
-    'Fire alert in zip code 76006 🚒',
-    'Fire risk score 8 at UTA 🚨',
-    'Alert: Current risk score is 9 at <300,200> and this is a long notification.',
+    "Risk level 0.4 at <32.6017,-97.1008>",
+    "Risk level 0.9 at <32.6117,-97.0908>",
+    "Risk level 0.2 at <32.6517,-97.1508>"
   ]); // Notification state
   const [showHeatmap, setShowHeatmap] = useState(true); // Heatmap visibility state
   const [clickedZip, setClickedZip] = useState<string | null>(null); // Selected ZIP code state
@@ -29,6 +29,19 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
     setMapCenter(zipCoord);
     setClickedZip(zipCode);
   }; // Handle ZIP code submission
+
+  const handleNotificationClick = (notification: string) => {
+    // Match "<lat,lon>" pattern
+    const match = notification.match(/<([\d.]+),\s*(-?[\d.]+)>/);
+    if (match) {
+      const lat = parseFloat(match[1]);
+      const lon = parseFloat(match[2]);
+      setMapCenter([lat, lon]);
+      setClickedZip(null);
+    } else {
+      console.warn("No coordinates found in notification:", notification);
+    }
+  };
 
   const DEFAULT_MAP_CENTER: Point = [32.7357, -97.1081]; // Example: Arlington, TX coordinates
 
@@ -61,6 +74,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
         setShowZipBorders={setShowZipBorders}
         onZipCodeSubmit={handleZipCodeSubmit}
         handleReset={handleReset}
+        handleNotificationClick={handleNotificationClick}
       />
     </div>
   );

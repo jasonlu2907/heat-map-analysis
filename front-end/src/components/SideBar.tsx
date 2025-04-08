@@ -41,6 +41,7 @@ interface SideBarProps {
   setShowZipBorders: (show: boolean) => void;
   onZipCodeSubmit: (coords: Point, zipCode: string) => void;
   handleReset: () => void;
+  handleNotificationClick: (notification: string) => void;
 }
 
 const SideBar: React.FC<SideBarProps> = ({
@@ -52,6 +53,7 @@ const SideBar: React.FC<SideBarProps> = ({
   setShowZipBorders,
   onZipCodeSubmit,
   handleReset,
+  handleNotificationClick,
 }) => {
   const [open, setOpen] = useState(false); // Local state for sidebar open/close
 
@@ -97,11 +99,15 @@ const SideBar: React.FC<SideBarProps> = ({
                     {notifications.map((notification, index) => (
                       <li
                         key={index}
+                        onClick={() => handleNotificationClick(notification)}
                         className='flex justify-between items-center p-2 bg-gray-100 rounded-md text-sm cursor-pointer hover:bg-gray-200 transition'
                       >
                         <span>{notification}</span>
                         <button
-                          onClick={() => removeNotification(index)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeNotification(index);
+                          }}
                           className='text-gray-400 text-s font-bold hover:text-gray-600'
                         >
                           X
