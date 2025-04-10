@@ -9,6 +9,16 @@ interface WrapperProps {
   setMapCenter: (coords: Point) => void;
 }
 
+export type GridColor =
+  | 'rgba(221, 40, 40, 0.95)'
+  | 'rgba(255, 130, 24, 0.95)'
+  | 'rgba(245, 245, 29, 0.95)'
+  | 'rgba(32, 221, 28, 0.95)'
+  | 'rgba(67, 89, 242, 0.95)';
+
+export type GridColorsState = Record<GridColor, boolean>;
+
+
 const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
   const [notifications, setNotifications] = useState([
     "Risk level 0.4 at <32.6017,-97.1008>",
@@ -18,6 +28,13 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
   const [showHeatmap, setShowHeatmap] = useState(true); // Heatmap visibility state
   const [clickedZip, setClickedZip] = useState<string | null>(null); // Selected ZIP code state
   const [showZipBorders, setShowZipBorders] = useState(true); // ZIP code borders visibility state
+  const [gridColors, setGridColors] = useState<GridColorsState>({
+    'rgba(221, 40, 40, 0.95)': true,
+    'rgba(255, 130, 24, 0.95)': true,
+    'rgba(245, 245, 29, 0.95)': true,
+    'rgba(32, 221, 28, 0.95)': true,
+    'rgba(67, 89, 242, 0.95)': true,
+  });
 
   const removeNotification = (indexToRemove: number) => {
     setNotifications(
@@ -61,6 +78,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
           setClickedZip={setClickedZip}
           showHeatmap={showHeatmap}
           showZipBorders={showZipBorders}
+          gridColors={gridColors}
         />
       </div>
 
@@ -75,6 +93,8 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
         onZipCodeSubmit={handleZipCodeSubmit}
         handleReset={handleReset}
         handleNotificationClick={handleNotificationClick}
+        gridColors={gridColors}
+        setGridColors={setGridColors}
       />
     </div>
   );

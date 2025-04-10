@@ -11,10 +11,16 @@ const getColor = (risk: number) => {
                       "rgba(0, 0, 0, 0)";
 };
 
-const GeoGridLayer: React.FC = () => {
+interface GeoGridLayerProps {
+  gridColors: Record<string, boolean>;
+}
+
+const GeoGridLayer: React.FC<GeoGridLayerProps> = ({gridColors}) => {
+  
   const [gridData, setGridData] = useState<any[]>([]);
   const [riskValues, setRiskValues] = useState<number[]>([]);
   const [selectedPolygon, setSelectedPolygon] = useState<number | null>(null); // Track clicked polygon
+
   const map = useMap();
 
   useEffect(() => {
@@ -36,17 +42,23 @@ const GeoGridLayer: React.FC = () => {
     .catch((error) => console.error("Error loading risk values:", error));
   }, []);
 
+  useEffect(() => {
+    console.log("GRID COLORS UPDATED:", gridColors);
+  }, [gridColors]);
+
   return (
     <>
       {gridData.map((feature, index) => {
         const risk = riskValues[index] || 0; // Assign risk based on index
+        const color = getColor(risk);
         const coordinates = feature.geometry.coordinates[0].map((coord: number[]) => [coord[1], coord[0]]); // Swap [lon, lat] -> [lat, lon]
-
+        
+        const isVisible = gridColors[color] ?? true;
         return (
           <Polygon
             key={index}
             positions={coordinates}
-            pathOptions={{ color: getColor(risk), fillOpacity: 0.6 }}
+            pathOptions={{ color: color, fillOpacity: isVisible? 0.6 : 0, opacity: isVisible ? 1 : 0 }}
             eventHandlers={{
               click: () => setSelectedPolygon(index), // Set the clicked polygon
             }}

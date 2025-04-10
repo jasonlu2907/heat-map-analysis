@@ -17,6 +17,7 @@ interface MapProps {
   setClickedZip: (zip: string | null) => void;
   showHeatmap: boolean;
   showZipBorders: boolean;
+  gridColors: Record<string, boolean>;
 }
 
 const Map: React.FC<MapProps> = ({
@@ -25,6 +26,7 @@ const Map: React.FC<MapProps> = ({
   setClickedZip,
   showHeatmap,
   showZipBorders,
+  gridColors,
 }) => {
   const animateRef = useRef(true);
   const heatmapData: Point[] = heatmapDatas;
@@ -52,7 +54,7 @@ const Map: React.FC<MapProps> = ({
         <BorderLayer clickedZip={clickedZip} />
 
         {/* 🔥 Add GeoGridLayer for Risk Zones */}
-        <GeoGridLayer />
+        <GeoGridLayer gridColors={gridColors}/>
 
         {/* Heatmap Layer - Only render if showHeatmap is true */}
         {showHeatmap && (
