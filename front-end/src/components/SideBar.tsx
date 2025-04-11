@@ -31,6 +31,7 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from '@radix-ui/react-collapsible';
+import { GridColorsState } from './Wrapper';
 
 interface SideBarProps {
   notifications: string[];
@@ -42,7 +43,10 @@ interface SideBarProps {
   onZipCodeSubmit: (coords: Point, zipCode: string) => void;
   handleReset: () => void;
   handleNotificationClick: (notification: string) => void;
+  gridColors: GridColorsState;
+  setGridColors:  React.Dispatch<React.SetStateAction<GridColorsState>>;
 }
+
 
 const SideBar: React.FC<SideBarProps> = ({
   notifications,
@@ -54,8 +58,17 @@ const SideBar: React.FC<SideBarProps> = ({
   onZipCodeSubmit,
   handleReset,
   handleNotificationClick,
+  gridColors,
+  setGridColors
 }) => {
   const [open, setOpen] = useState(false); // Local state for sidebar open/close
+  // const [gridColors, setGridColors] = useState({
+  //   'rgba(221, 40, 40, 0.95)': true,  // Red
+  //   'rgba(255, 130, 24, 0.95)': true, // Orange
+  //   'rgba(245, 245, 29, 0.95)': true, // Yellow
+  //   'rgba(32, 221, 28, 0.95)': true,  // Green
+  //   'rgba(67, 89, 242, 0.95)': true,  // Blue
+  // });
 
   return (
     <SidebarProvider open={open} onOpenChange={setOpen}>
@@ -178,6 +191,57 @@ const SideBar: React.FC<SideBarProps> = ({
                 </CollapsibleContent>
               </SidebarMenuItem>
             </Collapsible>
+
+            {/* Grid Settings */}
+            <Collapsible defaultOpen={false} className='group/collapsible'>
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton isActive>
+                    <Sliders />
+                    <span>Grid Settings</span>
+                    <ChevronDown className='ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180' />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                  {[{color: 'rgba(221, 40, 40, 0.95)', label:'Red'},
+                   {color: 'rgba(255, 130, 24, 0.95)', label: 'Orange'},
+                   {color: 'rgba(245, 245, 29, 0.95)', label: 'Yellow'},
+                   {color: 'rgba(32, 221, 28, 0.95)', label: 'Green'},
+                   {color: 'rgba(67, 89, 242, 0.95)', label: 'Blue'}
+                  ].map(({color, label}) => (
+                    <div key={color} className='flex items-center justify-between p-2'>
+                      <div
+                      className='w-4 h-4 rounded-sm'
+                      style={{ backgroundColor: color }}
+                      ></div>
+                      <label
+                        htmlFor={`${color}-grid`}
+                        className='capitalize text-sm font-medium'
+                        >
+                          {label} Cells
+                        </label>
+                        <Switch
+                          id={`${color}-grid`}
+                          checked={gridColors[color as keyof GridColorsState]}
+                          onCheckedChange={(checked) =>
+                            setGridColors((prev) => ({
+                              ...prev,
+                              [color as keyof GridColorsState]: checked,
+                            }))
+                          }
+                        />
+                    </div>
+                  ))}
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+
+
+
+            
+
 
             {/* Documentation Link */}
             <SidebarMenuItem>
