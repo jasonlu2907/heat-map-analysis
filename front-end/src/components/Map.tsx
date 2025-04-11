@@ -10,6 +10,11 @@ import heatmapDatas from '../../../back-end/heatmapData.ts';
 import WeatherOverlay from './mapComponents/WeatherOverlay.tsx';
 import GeoGridLayer from './mapComponents/GeoGridLayer';
 import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer.tsx';
+import SearchControl from './mapComponents/SearchControl'; 
+
+
+
+
 
 interface MapProps {
   position: Point;
@@ -32,6 +37,7 @@ const Map: React.FC<MapProps> = ({
   return (
     <div>
       <WeatherOverlay />
+      
       <MapContainer
         center={position}
         zoom={12}
@@ -40,6 +46,7 @@ const Map: React.FC<MapProps> = ({
         style={{ height: '100vh', width: '100%', zIndex: 10 }}
         key={position.toString()} // Add key to force re-render on position change
       >
+        <SearchControl />
         <ChangeMapView position={position} animateRef={animateRef} />
         <TileLayer
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
