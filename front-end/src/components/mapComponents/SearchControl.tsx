@@ -1,59 +1,9 @@
-
-// import { useEffect } from 'react';
-// import { useMap } from 'react-leaflet';
-// import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
-// import 'leaflet-geosearch/dist/geosearch.css';
-// import L from 'leaflet';
-
-// const SearchControl = () => {
-//   const map = useMap();
-
-//   useEffect(() => {
-//     // Limit to US addresses, up to 5 suggestions
-//     const provider = new OpenStreetMapProvider({
-//       params: {
-//         countrycodes: 'us',   // Restrict to US
-//         limit: 5,
-//         addressdetails: 1,
-//         'accept-language': 'en',
-//         bounded: 1, // Enforces bounding box usage
-//         viewbox: '-125.0, 49.0, -66.9, 24.0', // roughly the bounding box for the continental US: (west-lon, north-lat, east-lon, south-lat)
-//       }
-//     });
-
-//     const searchControl = new (GeoSearchControl as any)({
-//       provider,
-//       style: 'bar',        
-//       autoClose: true,
-//       showMarker: true,
-//       keepResult: true,
-//       marker: {
-//         icon: new L.Icon.Default(),
-//         draggable: false,
-//       },
-//       searchLabel: 'Enter an address...', // placeholder text
-//       notFoundMessage: 'Sorry, we couldn’t find that location.',
-//       animateZoom: true,
-//       retainZoomLevel: false,
-//     });
-
-//     map.addControl(searchControl);
-
-//     return () => {
-//       map.removeControl(searchControl);
-//     };
-//   }, [map]);
-
-//   return null;
-// };
-
-// export default SearchControl;
-
 import { useEffect, useRef } from 'react';
 import { useMap } from 'react-leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet-geosearch/dist/geosearch.css';
 import L from 'leaflet';
+import './SearchControl.css';
 
 const SearchControl = () => {
   const map = useMap();

@@ -16,11 +16,10 @@ const WeatherOverlay: React.FC = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
 
   useEffect(() => {
-    fetch("https://heatmap-analysis.onrender.com/current") // Ensure this matches your backend
+    fetch("https://heatmap-analysis.onrender.com/current") 
       .then((response) => response.json())
       .then((data) => {
-        console.log("Weather API Response:", data); // Debugging: check response in console
-        console.log("Icon code:", data.current.weather[0].icon);
+        console.log("Weather API Response:", data); // Check response in console
         if (data.current && data.current.weather && data.current.weather.length > 0) {
           setWeather({
             city_name: "Arlington", // Hardcoded city name
@@ -42,12 +41,7 @@ const WeatherOverlay: React.FC = () => {
 
   return (
     <div className="weather-overlay">
-      {/* Weather Description (Centered at Top) */}
-      {/* <div className="weather-description">
-      <p>{weather.weather_main} - {weather.weather_description}</p>
-      </div> */}
 
-      {/* Main Row: Icon & Big Temp on the left, Humidity/Wind on the right */}
       <div className="weather-main-row">
         <div className="weather-left">
           <img
