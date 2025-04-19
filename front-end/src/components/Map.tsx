@@ -1,15 +1,16 @@
 import React, { useRef } from 'react';
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet.heat';
-import HeatmapLayer, { Point } from './mapComponents/HeatmapLayer';
+import { Point } from './mapComponents/HeatmapLayer';
 import ChangeMapView from './mapComponents/ChangeMapView';
 import Legend from './mapComponents/Legend';
 // import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer';
 import BorderLayer from './mapComponents/BorderLayer';
-import heatmapDatas from '../../../back-end/heatmapData.ts';
+// import heatmapDatas from '../../../back-end/heatmapData.ts';
 import WeatherOverlay from './mapComponents/WeatherOverlay.tsx';
 import GeoGridLayer from './mapComponents/GeoGridLayer';
 import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer.tsx';
+import GeoRiskHeatmap from './mapComponents/GeoRiskHeatmap.tsx';
 
 interface MapProps {
   position: Point;
@@ -29,7 +30,7 @@ const Map: React.FC<MapProps> = ({
   gridColors,
 }) => {
   const animateRef = useRef(true);
-  const heatmapData: Point[] = heatmapDatas;
+  // const heatmapData: Point[] = heatmapDatas;
 
   return (
     <div>
@@ -54,16 +55,17 @@ const Map: React.FC<MapProps> = ({
         <BorderLayer clickedZip={clickedZip} />
 
         {/* 🔥 Add GeoGridLayer for Risk Zones */}
-        <GeoGridLayer gridColors={gridColors}/>
+        <GeoGridLayer gridColors={gridColors} />
 
         {/* Heatmap Layer - Only render if showHeatmap is true */}
-        {showHeatmap && (
+        {/* {showHeatmap && (
           <HeatmapLayer
             points={heatmapData}
             clickedZip={clickedZip}
             showHeatmap={showHeatmap}
           />
-        )}
+        )} */}
+        {showHeatmap && <GeoRiskHeatmap showHeatmap={showHeatmap} />}
 
         {/* ZIP Code Borders - Only render if showZipBorders is true */}
         {showZipBorders && (
