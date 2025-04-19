@@ -54,7 +54,8 @@ const GeoRiskHeatmap: React.FC<HeatmapLayerProps> = (showHeatmap) => {
 
         const gridJson = await gridResponse.json();
         const riskJson: Risk[] = await riskResponse.json();
-        console.log(riskJson);
+        // console.log(riskJson);
+
         // Filter out zero-risk areas and create features with risk values
         const heatPoints: Point[] = gridJson.features
           .map((feature: Feature, index: number) => {

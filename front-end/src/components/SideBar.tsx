@@ -38,6 +38,8 @@ interface SideBarProps {
   removeNotification: (index: number) => void;
   showHeatmap: boolean;
   setShowHeatmap: (show: boolean) => void;
+  showGridCells: boolean;
+  setShowGridCells: (show: boolean) => void;
   showZipBorders: boolean;
   setShowZipBorders: (show: boolean) => void;
   onZipCodeSubmit: (coords: Point, zipCode: string) => void;
@@ -52,6 +54,8 @@ const SideBar: React.FC<SideBarProps> = ({
   removeNotification,
   showHeatmap,
   setShowHeatmap,
+  showGridCells,
+  setShowGridCells,
   showZipBorders,
   setShowZipBorders,
   onZipCodeSubmit,
@@ -61,13 +65,6 @@ const SideBar: React.FC<SideBarProps> = ({
   setGridColors,
 }) => {
   const [open, setOpen] = useState(false); // Local state for sidebar open/close
-  // const [gridColors, setGridColors] = useState({
-  //   'rgba(221, 40, 40, 0.95)': true,  // Red
-  //   'rgba(255, 130, 24, 0.95)': true, // Orange
-  //   'rgba(245, 245, 29, 0.95)': true, // Yellow
-  //   'rgba(32, 221, 28, 0.95)': true,  // Green
-  //   'rgba(67, 89, 242, 0.95)': true,  // Blue
-  // });
 
   return (
     <SidebarProvider open={open} onOpenChange={setOpen}>
@@ -87,7 +84,7 @@ const SideBar: React.FC<SideBarProps> = ({
         } w-64 z-40`}
       >
         <SidebarHeader>
-          <h2 className='text-lg font-semibold mb-6'>Sidebar Menu</h2>
+          <h2 className='text-xl font-semibold mb-6 mx-auto'>AFRAM</h2>
         </SidebarHeader>
 
         <SidebarContent>
@@ -175,6 +172,15 @@ const SideBar: React.FC<SideBarProps> = ({
                       <Switch
                         checked={showHeatmap}
                         onCheckedChange={setShowHeatmap}
+                      />
+                    </div>
+                    <div className='flex items-center justify-between p-2'>
+                      <label className='text-sm font-medium'>
+                        Show Grid Cells
+                      </label>
+                      <Switch
+                        checked={showGridCells}
+                        onCheckedChange={setShowGridCells}
                       />
                     </div>
                     <div className='flex items-center justify-between p-2'>
