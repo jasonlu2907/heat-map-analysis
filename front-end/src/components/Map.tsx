@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef,useEffect, useState } from 'react';
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet.heat';
 import { Point } from './mapComponents/HeatmapLayer';
@@ -11,6 +11,7 @@ import WeatherOverlay from './mapComponents/WeatherOverlay.tsx';
 import GeoGridLayer from './mapComponents/GeoGridLayer';
 import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer.tsx';
 import GeoRiskHeatmap from './mapComponents/GeoRiskHeatmap.tsx';
+import SearchControl from './mapComponents/SearchControl'; 
 
 interface MapProps {
   position: Point;
@@ -31,10 +32,26 @@ const Map: React.FC<MapProps> = ({
 }) => {
   const animateRef = useRef(true);
   // const heatmapData: Point[] = heatmapDatas;
+  const [riskMap, setRiskMap] = useState<Record<number, number>>({});
+
+  useEffect(() => {
+    fetch("https://heatmap-analysis.onrender.com/get-risks")
+      .then((response) => response.json())
+      .then((data) => {
+        const map: Record<number, number> = {};
+        data.forEach((item: { grid_id: number, predicted_risk: number }) => {
+          map[item.grid_id] = item.predicted_risk;
+        });
+        setRiskMap(map);
+        console.log("Fetched Risk Map:", map);
+      })
+      .catch((error) => console.error("Error fetching risks:", error));
+  }, []);
 
   return (
     <div>
       <WeatherOverlay />
+      
       <MapContainer
         center={position}
         zoom={12}
@@ -43,6 +60,7 @@ const Map: React.FC<MapProps> = ({
         style={{ height: '100vh', width: '100%', zIndex: 10 }}
         key={position.toString()} // Add key to force re-render on position change
       >
+        <SearchControl />
         <ChangeMapView position={position} animateRef={animateRef} />
         <TileLayer
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -54,8 +72,8 @@ const Map: React.FC<MapProps> = ({
         {/* Outer Border Layer */}
         <BorderLayer clickedZip={clickedZip} />
 
-        {/* 🔥 Add GeoGridLayer for Risk Zones */}
-        <GeoGridLayer gridColors={gridColors} />
+        {/* Add GeoGridLayer for Risk Zones */}
+        <GeoGridLayer gridColors={gridColors} riskMap={riskMap} />
 
         {/* Heatmap Layer - Only render if showHeatmap is true */}
         {/* {showHeatmap && (
