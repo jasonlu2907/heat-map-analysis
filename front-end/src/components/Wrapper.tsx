@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
 import { Point } from './mapComponents/HeatmapLayer';
 import Map from './Map';
@@ -20,14 +20,12 @@ export type GridColorsState = Record<GridColor, boolean>;
 
 
 const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
-  const [notifications, setNotifications] = useState([
-    "Risk level 0.4 at <32.6017,-97.1008>",
-    "Risk level 0.9 at <32.6117,-97.0908>",
-    "Risk level 0.2 at <32.6517,-97.1508>"
-  ]); // Notification state
+  const [notifications, setNotifications] = useState<string[]>([]);
+  const [gridCentroids, setGridCentroids] = useState<Record<number, Point>>({});
   const [showHeatmap, setShowHeatmap] = useState(true); // Heatmap visibility state
   const [clickedZip, setClickedZip] = useState<string | null>(null); // Selected ZIP code state
   const [showZipBorders, setShowZipBorders] = useState(true); // ZIP code borders visibility state
+  const [riskMap, setRiskMap] = useState<Record<number, number>>({});
   const [gridColors, setGridColors] = useState<GridColorsState>({
     'rgba(221, 40, 40, 0.95)': true,
     'rgba(255, 130, 24, 0.95)': true,
@@ -35,7 +33,51 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
     'rgba(32, 221, 28, 0.95)': true,
     'rgba(67, 89, 242, 0.95)': true,
   });
+  useEffect(() => {
+    fetch('/arlington_grid_no_risk.geojson')
+      .then((res) => res.json())
+      .then((geoData) => {
+        const centroids: Record<number, Point> = {};
+  
+        geoData.features.forEach((feature: any) => {
+          const gridId = feature.properties?.grid_id;
+  
+          if (typeof gridId === 'number') {
+            const coords = feature.geometry.coordinates[0];
+            const lat = coords.reduce((sum: number, c: number[]) => sum + c[1], 0) / coords.length;
+            const lon = coords.reduce((sum: number, c: number[]) => sum + c[0], 0) / coords.length;
+            centroids[gridId] = [lat, lon];
+          }
+        });
+  
+        console.log("✅ Loaded centroids:", centroids); // optional debug
+        setGridCentroids(centroids);
+      });
+  }, []);
+  
+  // Fetch risk data and create notifications
+  useEffect(() => {
+    const fetchHighRiskData = async () => {
+      try {
+        const res = await fetch('https://heatmap-analysis.onrender.com/get-risks');
+        const data = await res.json();
 
+        const riskMapData: Record<number, number> = {};
+        const highRisk = data
+          .filter((cell: { predicted_risk: number }) => cell.predicted_risk >= 6)
+          .map((cell: { grid_id: number; predicted_risk: number }) => {
+            riskMapData[cell.grid_id] = cell.predicted_risk;
+            return `Risk level ${cell.predicted_risk.toFixed(1)} at cell ${cell.grid_id}`;
+          });
+
+        setRiskMap(riskMapData);
+        setNotifications(highRisk); // Or [...highRisk, ...prev] if you want to preserve previous
+      } catch (err) {
+        console.error('Failed to fetch risk data:', err);
+      }
+    };
+    fetchHighRiskData();
+  }, []);
   const removeNotification = (indexToRemove: number) => {
     setNotifications(
       notifications.filter((_, index) => index !== indexToRemove)
@@ -48,15 +90,17 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
   }; // Handle ZIP code submission
 
   const handleNotificationClick = (notification: string) => {
-    // Match "<lat,lon>" pattern
-    const match = notification.match(/<([\d.]+),\s*(-?[\d.]+)>/);
+    const match = notification.match(/cell\s+(\d+)/i);
     if (match) {
-      const lat = parseFloat(match[1]);
-      const lon = parseFloat(match[2]);
-      setMapCenter([lat, lon]);
-      setClickedZip(null);
-    } else {
-      console.warn("No coordinates found in notification:", notification);
+      const gridId = parseInt(match[1]);
+      const coords = gridCentroids[gridId];
+
+      if (coords) {
+        setMapCenter(coords); // this will trigger ChangeMapView
+        setClickedZip(null);
+      } else {
+        console.warn(`No coordinates found for grid_id ${gridId}`);
+      }
     }
   };
 
