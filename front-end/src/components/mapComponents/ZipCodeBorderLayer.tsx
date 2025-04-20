@@ -14,7 +14,7 @@ const ZipCodeBorderLayer: React.FC<ZipCodeBorderLayerProps> = ({
   setClickedZip,
 }) => {
   // const [hoveredZip, setHoveredZip] = useState<string | null>(null);
-  const [showZipBorders, setShowZipBorders] = useState(true); // Default: ON
+  const [showZipBorders] = useState(true); // Default: ON
 
   const style = (zipCode: string): PathOptions => ({
     color: clickedZip === zipCode ? '#FF0000' : '#03254c', // Red border for selected ZIP, blue for others
