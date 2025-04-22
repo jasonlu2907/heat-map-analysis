@@ -38,37 +38,33 @@ interface SideBarProps {
   removeNotification: (index: number) => void;
   showHeatmap: boolean;
   setShowHeatmap: (show: boolean) => void;
+  showGridCells: boolean;
+  setShowGridCells: (show: boolean) => void;
   showZipBorders: boolean;
   setShowZipBorders: (show: boolean) => void;
   onZipCodeSubmit: (coords: Point, zipCode: string) => void;
   handleReset: () => void;
   handleNotificationClick: (notification: string) => void;
   gridColors: GridColorsState;
-  setGridColors:  React.Dispatch<React.SetStateAction<GridColorsState>>;
+  setGridColors: React.Dispatch<React.SetStateAction<GridColorsState>>;
 }
-
 
 const SideBar: React.FC<SideBarProps> = ({
   notifications,
   removeNotification,
   showHeatmap,
   setShowHeatmap,
+  showGridCells,
+  setShowGridCells,
   showZipBorders,
   setShowZipBorders,
   onZipCodeSubmit,
   handleReset,
   handleNotificationClick,
   gridColors,
-  setGridColors
+  setGridColors,
 }) => {
   const [open, setOpen] = useState(false); // Local state for sidebar open/close
-  // const [gridColors, setGridColors] = useState({
-  //   'rgba(221, 40, 40, 0.95)': true,  // Red
-  //   'rgba(255, 130, 24, 0.95)': true, // Orange
-  //   'rgba(245, 245, 29, 0.95)': true, // Yellow
-  //   'rgba(32, 221, 28, 0.95)': true,  // Green
-  //   'rgba(67, 89, 242, 0.95)': true,  // Blue
-  // });
 
   return (
     <SidebarProvider open={open} onOpenChange={setOpen}>
@@ -88,7 +84,7 @@ const SideBar: React.FC<SideBarProps> = ({
         } w-64 z-40`}
       >
         <SidebarHeader>
-          <h2 className='text-lg font-semibold mb-6'>Sidebar Menu</h2>
+          <h2 className='text-xl font-semibold mb-6 mx-auto'>AFRAM</h2>
         </SidebarHeader>
 
         <SidebarContent>
@@ -180,6 +176,15 @@ const SideBar: React.FC<SideBarProps> = ({
                     </div>
                     <div className='flex items-center justify-between p-2'>
                       <label className='text-sm font-medium'>
+                        Show Grid Cells
+                      </label>
+                      <Switch
+                        checked={showGridCells}
+                        onCheckedChange={setShowGridCells}
+                      />
+                    </div>
+                    <div className='flex items-center justify-between p-2'>
+                      <label className='text-sm font-medium'>
                         Show ZIP Borders
                       </label>
                       <Switch
@@ -204,20 +209,24 @@ const SideBar: React.FC<SideBarProps> = ({
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                  {[{color: 'rgba(221, 40, 40, 0.95)', label:'Red'},
-                   {color: 'rgba(255, 130, 24, 0.95)', label: 'Orange'},
-                   {color: 'rgba(245, 245, 29, 0.95)', label: 'Yellow'},
-                   {color: 'rgba(32, 221, 28, 0.95)', label: 'Green'},
-                   {color: 'rgba(67, 89, 242, 0.95)', label: 'Blue'}
-                  ].map(({color, label}) => (
-                    <div key={color} className='flex items-center justify-between p-2'>
+                    {[
+                      { color: 'rgba(221, 40, 40, 0.95)', label: 'Red' },
+                      { color: 'rgba(255, 130, 24, 0.95)', label: 'Orange' },
+                      { color: 'rgba(245, 245, 29, 0.95)', label: 'Yellow' },
+                      { color: 'rgba(32, 221, 28, 0.95)', label: 'Green' },
+                      { color: 'rgba(67, 89, 242, 0.95)', label: 'Blue' },
+                    ].map(({ color, label }) => (
                       <div
-                      className='w-4 h-4 rounded-sm'
-                      style={{ backgroundColor: color }}
-                      ></div>
-                      <label
-                        htmlFor={`${color}-grid`}
-                        className='capitalize text-sm font-medium'
+                        key={color}
+                        className='flex items-center justify-between p-2'
+                      >
+                        <div
+                          className='w-4 h-4 rounded-sm'
+                          style={{ backgroundColor: color }}
+                        ></div>
+                        <label
+                          htmlFor={`${color}-grid`}
+                          className='capitalize text-sm font-medium'
                         >
                           {label} Cells
                         </label>
@@ -231,23 +240,18 @@ const SideBar: React.FC<SideBarProps> = ({
                             }))
                           }
                         />
-                    </div>
-                  ))}
+                      </div>
+                    ))}
                   </SidebarMenuSub>
                 </CollapsibleContent>
               </SidebarMenuItem>
             </Collapsible>
 
-
-
-            
-
-
             {/* Documentation Link */}
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive>
                 <a
-                  href='https://docs.google.com/document/d/1V6Ar4Mgx3md5B1XrWJUrkpiUZV7W1wLOLsVxWnYAyUA/edit?tab=t.0'
+                  href=' https://websites.uta.edu/cseseniordesign/'
                   target='_blank'
                   rel='noopener noreferrer'
                 >

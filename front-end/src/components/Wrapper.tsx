@@ -18,14 +18,16 @@ export type GridColor =
 
 export type GridColorsState = Record<GridColor, boolean>;
 
-
 const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
-  const [notifications, setNotifications] = useState<string[]>([]);
-  const [gridCentroids, setGridCentroids] = useState<Record<number, Point>>({});
+  const [notifications, setNotifications] = useState([
+    'Risk level 0.4 at <32.6017,-97.1008>',
+    'Risk level 0.9 at <32.6117,-97.0908>',
+    'Risk level 0.2 at <32.6517,-97.1508>',
+  ]); // Notification state
   const [showHeatmap, setShowHeatmap] = useState(true); // Heatmap visibility state
-  const [clickedZip, setClickedZip] = useState<string | null>(null); // Selected ZIP code state
   const [showZipBorders, setShowZipBorders] = useState(true); // ZIP code borders visibility state
-  const [riskMap, setRiskMap] = useState<Record<number, number>>({});
+  const [showGridCells, setShowGridCells] = useState(true); // ZIP code borders visibility state
+  const [clickedZip, setClickedZip] = useState<string | null>(null); // Selected ZIP code state
   const [gridColors, setGridColors] = useState<GridColorsState>({
     'rgba(221, 40, 40, 0.95)': true,
     'rgba(255, 130, 24, 0.95)': true,
@@ -92,15 +94,12 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
   const handleNotificationClick = (notification: string) => {
     const match = notification.match(/cell\s+(\d+)/i);
     if (match) {
-      const gridId = parseInt(match[1]);
-      const coords = gridCentroids[gridId];
-
-      if (coords) {
-        setMapCenter(coords); // this will trigger ChangeMapView
-        setClickedZip(null);
-      } else {
-        console.warn(`No coordinates found for grid_id ${gridId}`);
-      }
+      const lat = parseFloat(match[1]);
+      const lon = parseFloat(match[2]);
+      setMapCenter([lat, lon]);
+      setClickedZip(null);
+    } else {
+      console.warn('No coordinates found in notification:', notification);
     }
   };
 
@@ -121,6 +120,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
           clickedZip={clickedZip}
           setClickedZip={setClickedZip}
           showHeatmap={showHeatmap}
+          showGridCells={showGridCells}
           showZipBorders={showZipBorders}
           gridColors={gridColors}
         />
@@ -132,6 +132,8 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
         removeNotification={removeNotification}
         showHeatmap={showHeatmap}
         setShowHeatmap={setShowHeatmap}
+        showGridCells={showGridCells}
+        setShowGridCells={setShowGridCells}
         showZipBorders={showZipBorders}
         setShowZipBorders={setShowZipBorders}
         onZipCodeSubmit={handleZipCodeSubmit}

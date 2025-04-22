@@ -1,0 +1,16 @@
+
+.leaflet-control-geosearch {
+    font-size: 20px !important; /* font size for x */
+  }
+  
+  .leaflet-control-geosearch .glass {
+    height: 25px !important;
+  }
+  
+  .leaflet-control-geosearch input {
+    font-size: 18px !important; /* font size for input */
+  }
+  
+  .leaflet-control-geosearch .results {
+    font-size: 13px !important;
+  }
