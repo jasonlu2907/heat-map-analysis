@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { Point } from './mapComponents/HeatmapLayer';
 import Map from './Map';
@@ -35,51 +35,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
     'rgba(32, 221, 28, 0.95)': true,
     'rgba(67, 89, 242, 0.95)': true,
   });
-  useEffect(() => {
-    fetch('/arlington_grid_no_risk.geojson')
-      .then((res) => res.json())
-      .then((geoData) => {
-        const centroids: Record<number, Point> = {};
-  
-        geoData.features.forEach((feature: any) => {
-          const gridId = feature.properties?.grid_id;
-  
-          if (typeof gridId === 'number') {
-            const coords = feature.geometry.coordinates[0];
-            const lat = coords.reduce((sum: number, c: number[]) => sum + c[1], 0) / coords.length;
-            const lon = coords.reduce((sum: number, c: number[]) => sum + c[0], 0) / coords.length;
-            centroids[gridId] = [lat, lon];
-          }
-        });
-  
-        console.log("✅ Loaded centroids:", centroids); // optional debug
-        setGridCentroids(centroids);
-      });
-  }, []);
-  
-  // Fetch risk data and create notifications
-  useEffect(() => {
-    const fetchHighRiskData = async () => {
-      try {
-        const res = await fetch('https://heatmap-analysis.onrender.com/get-risks');
-        const data = await res.json();
 
-        const riskMapData: Record<number, number> = {};
-        const highRisk = data
-          .filter((cell: { predicted_risk: number }) => cell.predicted_risk >= 6)
-          .map((cell: { grid_id: number; predicted_risk: number }) => {
-            riskMapData[cell.grid_id] = cell.predicted_risk;
-            return `Risk level ${cell.predicted_risk.toFixed(1)} at cell ${cell.grid_id}`;
-          });
-
-        setRiskMap(riskMapData);
-        setNotifications(highRisk); // Or [...highRisk, ...prev] if you want to preserve previous
-      } catch (err) {
-        console.error('Failed to fetch risk data:', err);
-      }
-    };
-    fetchHighRiskData();
-  }, []);
   const removeNotification = (indexToRemove: number) => {
     setNotifications(
       notifications.filter((_, index) => index !== indexToRemove)
@@ -92,7 +48,8 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
   }; // Handle ZIP code submission
 
   const handleNotificationClick = (notification: string) => {
-    const match = notification.match(/cell\s+(\d+)/i);
+    // Match "<lat,lon>" pattern
+    const match = notification.match(/<([\d.]+),\s*(-?[\d.]+)>/);
     if (match) {
       const lat = parseFloat(match[1]);
       const lon = parseFloat(match[2]);
