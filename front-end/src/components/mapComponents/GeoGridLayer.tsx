@@ -1,3 +1,4 @@
+import { geoJson } from '@/assets/arlington_risks';
 import React, { useEffect, useState } from 'react';
 import { Polygon, Popup } from 'react-leaflet';
 
