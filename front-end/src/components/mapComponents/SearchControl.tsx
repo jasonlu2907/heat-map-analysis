@@ -21,7 +21,7 @@ const SearchControl = () => {
       },
     });
 
-    const searchControl = new (GeoSearchControl as any)({
+    const searchControl = GeoSearchControl({
       provider,
       style: 'bar',
       autoClose: true,
@@ -50,7 +50,9 @@ const SearchControl = () => {
     // MutationObserver to detect clear button click
     const searchBox = document.querySelector('.leaflet-control-geosearch form');
     const observer = new MutationObserver(() => {
-      const input = document.querySelector('.leaflet-control-geosearch input') as HTMLInputElement;
+      const input = document.querySelector(
+        '.leaflet-control-geosearch input'
+      ) as HTMLInputElement;
       if (input && input.value === '' && markerRef.current) {
         map.removeLayer(markerRef.current); // remove the marker from the map
         markerRef.current = null;

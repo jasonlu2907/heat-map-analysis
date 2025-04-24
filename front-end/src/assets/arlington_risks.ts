@@ -5,16 +5,20 @@ export type geoJson = {
     type: string;
     properties: object;
   };
-  features: {
+  features: Feature[];
+};
+
+export type Feature = {
+  // make a type Feature based on the geoJson features
+  type?: string;
+  properties: {
+    grid_id: number;
+    predicted_risk?: number;
+  };
+  geometry: {
     type: string;
-    properties: {
-      grid_id: number;
-    };
-    geometry: {
-      type: string;
-      coordinates: number[][][];
-    };
-  }[];
+    coordinates: number[][][];
+  };
 };
 
 export const Arlington_Risks: geoJson = {

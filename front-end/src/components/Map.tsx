@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet.heat';
 import { Point } from './mapComponents/HeatmapLayer';
@@ -32,10 +32,10 @@ const Map: React.FC<MapProps> = ({
   showGridCells,
   showZipBorders,
   gridColors,
-  riskMap
+  riskMap,
 }) => {
   const animateRef = useRef(true);
- // const heatmapData: Point[] = heatmapDatas;
+  // const heatmapData: Point[] = heatmapDatas;
   // const [riskMap, setRiskMap] = useState<Record<number, number>>({});
 
   // useEffect(() => {
@@ -63,7 +63,6 @@ const Map: React.FC<MapProps> = ({
         style={{ height: '100vh', width: '100%', zIndex: 10 }}
         key={position.toString()} // Add key to force re-render on position change
       >
-
         <SearchControl />
         <ChangeMapView position={position} animateRef={animateRef} />
         <TileLayer

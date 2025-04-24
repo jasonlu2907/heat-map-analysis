@@ -2,25 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet.heat';
+import { Arlington_Risks, Feature } from '@/assets/arlington_risks';
 
 declare global {
   interface Window {
     // global object registered by heatmap.js. Used to create heapmap instances
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     h337: any; // must for TypeScript (TypeError)
   }
 }
 
 // Define a type for heatmap points
 type Point = [number, number, number]; // [latitude, longitude, intensity]
-
-export interface Feature {
-  geometry: {
-    coordinates: number[][][];
-  };
-  properties: {
-    risk: number;
-  };
-}
 
 interface Risk {
   grid_id: number;
@@ -52,22 +45,23 @@ const GeoRiskHeatmap: React.FC<HeatmapLayerProps> = ({ showHeatmap }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [gridResponse, riskResponse] = await Promise.all([
-          fetch('/src/assets/arlington_grid_no_risk.geojson'),
+        const gridResponse = Arlington_Risks;
+        const [riskResponse] = await Promise.all([
+          // fetch('/src/assets/arlington_grid_no_risk.geojson'),
           fetch('https://heatmap-analysis.onrender.com/get-risks'),
         ]);
 
-        const gridJson = await gridResponse.json();
+        // const gridJson = await gridResponse.json();
         const riskJson: Risk[] = await riskResponse.json();
 
-        const heatPoints: Point[] = gridJson.features
+        const heatPoints: Point[] = gridResponse.features
           .map((feature: Feature, index: number) => {
             const coords = feature.geometry.coordinates[0];
             const [lat, lon] = calculateCentroid(coords);
             const intensity = riskJson[index]?.predicted_risk || 0;
-            return [lat, lon, intensity];
+            return [lat, lon, intensity] as Point;
           })
-          .filter((point: Point) => point[2] > 0);
+          .filter((point) => point[2] > 0);
 
         setHeatmapData(heatPoints);
       } catch (error) {
@@ -134,9 +128,6 @@ const GeoRiskHeatmap: React.FC<HeatmapLayerProps> = ({ showHeatmap }) => {
         max: maxValue,
         data: projected,
       });
-
-      // Wait a bit for the heatmap to render
-      await new Promise((resolve) => setTimeout(resolve, 100));
 
       try {
         const canvas = heatmap._renderer.canvas;
