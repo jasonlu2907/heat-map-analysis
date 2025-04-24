@@ -26,6 +26,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
   // ]); // Notification state
   const [riskMap, setRiskMap] = useState<Record<number, number>>({});
   const [notifications, setNotifications] = useState<string[]>([]); 
+  const [markerLocation, setMarkerLocation] = useState<Point | null>(null);
 
   useEffect(() => {
     const fetchRiskData = async () => {
@@ -47,7 +48,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
         grid.features.forEach((feature: any, idx: number) => {
           const risk = riskMapFromAPI[feature.properties.grid_id];
           // Check if risk is above a certain threshold (e.g., 8)
-          if (risk > 8) {
+          if (risk > 6) {
             const coords = feature.geometry.coordinates[0];
             const [lon, lat] = coords[0]; // first corner of the polygon
             newNotifications.push(`Risk level ${risk.toFixed(1)} at <${lat.toFixed(4)},${lon.toFixed(4)}>`);
@@ -101,6 +102,8 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
       const lon = parseFloat(match[2]);
       setMapCenter([lat, lon]);
       setClickedZip(null);
+      setMarkerLocation([lat, lon]); // Set marker location
+
     } else {
       console.warn('No coordinates found in notification:', notification);
     }
@@ -113,6 +116,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
     setClickedZip(null);
     setMapCenter(DEFAULT_MAP_CENTER); // Center the map to the default position
     document.dispatchEvent(new CustomEvent('resetZipCode'));
+    setMarkerLocation(null);
   };
 
   return (
@@ -128,6 +132,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
           showZipBorders={showZipBorders}
           gridColors={gridColors}
           riskMap={riskMap}
+          markerLocation={markerLocation} // Pass marker location to Map component
         />
       </div>
 

@@ -12,6 +12,8 @@ import GeoGridLayer from './mapComponents/GeoGridLayer';
 import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer.tsx';
 import GeoRiskHeatmap from './mapComponents/GeoRiskHeatmap.tsx';
 import SearchControl from './mapComponents/SearchControl';
+import { Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 
 interface MapProps {
   position: Point;
@@ -22,6 +24,7 @@ interface MapProps {
   showZipBorders: boolean;
   gridColors: Record<string, boolean>;
   riskMap: Record<number, number>;
+  markerLocation?: Point | null; // Optional prop for marker location
 }
 
 const Map: React.FC<MapProps> = ({
@@ -32,7 +35,8 @@ const Map: React.FC<MapProps> = ({
   showGridCells,
   showZipBorders,
   gridColors,
-  riskMap
+  riskMap,
+  markerLocation
 }) => {
   const animateRef = useRef(true);
  // const heatmapData: Point[] = heatmapDatas;
@@ -97,6 +101,13 @@ const Map: React.FC<MapProps> = ({
             clickedZip={clickedZip}
             setClickedZip={setClickedZip}
           />
+        )}
+        {markerLocation && (
+          <Marker position={markerLocation} icon={L.icon({ iconUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png' })}>
+            <Popup>
+              Risk Area<br />Lat: {markerLocation[0]}<br />Lng: {markerLocation[1]}
+            </Popup>
+          </Marker>
         )}
 
         <Legend />
