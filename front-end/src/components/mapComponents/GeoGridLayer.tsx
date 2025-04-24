@@ -45,7 +45,7 @@ const GeoGridLayer: React.FC<GeoGridLayerProps> = ({ gridColors, riskMap }) => {
           (coord: number[]) => [coord[1], coord[0]]
         ); // Swap [lon, lat] -> [lat, lon]
         const isVisible = gridColors[color] ?? true;
-
+        
         return (
           <Polygon
             key={index}

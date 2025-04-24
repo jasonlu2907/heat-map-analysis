@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Point } from './mapComponents/HeatmapLayer';
 import Map from './Map';
@@ -19,11 +19,57 @@ export type GridColor =
 export type GridColorsState = Record<GridColor, boolean>;
 
 const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
-  const [notifications, setNotifications] = useState([
-    'Risk level 0.4 at <32.6017,-97.1008>',
-    'Risk level 0.9 at <32.6117,-97.0908>',
-    'Risk level 0.2 at <32.6517,-97.1508>',
-  ]); // Notification state
+  // const [notifications, setNotifications] = useState([
+  //   'Risk level 0.4 at <32.6017,-97.1008>',
+  //   'Risk level 0.9 at <32.6117,-97.0908>',
+  //   'Risk level 0.2 at <32.6517,-97.1508>',
+  // ]); // Notification state
+  const [riskMap, setRiskMap] = useState<Record<number, number>>({});
+  const [notifications, setNotifications] = useState<string[]>([]); 
+
+  useEffect(() => {
+    const fetchRiskData = async () => {
+      try {
+        const [riskRes, geoRes] = await Promise.all([
+          fetch('https://heatmap-analysis.onrender.com/get-risks'),
+          fetch('/src/assets/arlington_grid_no_risk.geojson'),
+        ]);
+        const risks = await riskRes.json();
+        const grid = await geoRes.json();
+  
+        const riskMapFromAPI: Record<number, number> = {};
+        const newNotifications: string[] = [];
+  
+        risks.forEach((item: { grid_id: number, predicted_risk: number }) => {
+          riskMapFromAPI[item.grid_id] = item.predicted_risk;
+        });
+  
+        grid.features.forEach((feature: any, idx: number) => {
+          const risk = riskMapFromAPI[feature.properties.grid_id];
+          // Check if risk is above a certain threshold (e.g., 8)
+          if (risk > 8) {
+            const coords = feature.geometry.coordinates[0];
+            const [lon, lat] = coords[0]; // first corner of the polygon
+            newNotifications.push(`Risk level ${risk.toFixed(1)} at <${lat.toFixed(4)},${lon.toFixed(4)}>`);
+          }
+        });
+  
+        setRiskMap(riskMapFromAPI);
+        setNotifications(
+          newNotifications.sort((a, b) => {
+            const riskA = parseFloat(a.match(/Risk level ([\d.]+)/)?.[1] ?? '0');
+            const riskB = parseFloat(b.match(/Risk level ([\d.]+)/)?.[1] ?? '0');
+            return riskB - riskA; // Descending
+          })
+        );        
+      } catch (err) {
+        console.error('Error fetching risk + grid data:', err);
+      }
+    };
+  
+    fetchRiskData();
+  }, []);
+
   const [showHeatmap, setShowHeatmap] = useState(true); // Heatmap visibility state
   const [showZipBorders, setShowZipBorders] = useState(true); // ZIP code borders visibility state
   const [showGridCells, setShowGridCells] = useState(true); // ZIP code borders visibility state
@@ -60,6 +106,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
     }
   };
 
+
   const DEFAULT_MAP_CENTER: Point = [32.7357, -97.1081]; // Example: Arlington, TX coordinates
 
   const handleReset = () => {
@@ -80,6 +127,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
           showGridCells={showGridCells}
           showZipBorders={showZipBorders}
           gridColors={gridColors}
+          riskMap={riskMap}
         />
       </div>
 

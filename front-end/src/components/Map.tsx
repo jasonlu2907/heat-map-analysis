@@ -21,6 +21,7 @@ interface MapProps {
   showGridCells: boolean;
   showZipBorders: boolean;
   gridColors: Record<string, boolean>;
+  riskMap: Record<number, number>;
 }
 
 const Map: React.FC<MapProps> = ({
@@ -31,23 +32,24 @@ const Map: React.FC<MapProps> = ({
   showGridCells,
   showZipBorders,
   gridColors,
+  riskMap
 }) => {
   const animateRef = useRef(true);
-  // const heatmapData: Point[] = heatmapDatas;
-  const [riskMap, setRiskMap] = useState<Record<number, number>>({});
+ // const heatmapData: Point[] = heatmapDatas;
+  // const [riskMap, setRiskMap] = useState<Record<number, number>>({});
 
-  useEffect(() => {
-    fetch('https://heatmap-analysis.onrender.com/get-risks')
-      .then((response) => response.json())
-      .then((data) => {
-        const map: Record<number, number> = {};
-        data.forEach((item: { grid_id: number; predicted_risk: number }) => {
-          map[item.grid_id] = item.predicted_risk;
-        });
-        setRiskMap(map);
-      })
-      .catch((error) => console.error('Error fetching risks:', error));
-  }, []);
+  // useEffect(() => {
+  //   fetch('https://heatmap-analysis.onrender.com/get-risks')
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       const map: Record<number, number> = {};
+  //       data.forEach((item: { grid_id: number; predicted_risk: number }) => {
+  //         map[item.grid_id] = item.predicted_risk;
+  //       });
+  //       setRiskMap(map);
+  //     })
+  //     .catch((error) => console.error('Error fetching risks:', error));
+  // }, []);
 
   return (
     <div>
@@ -61,6 +63,7 @@ const Map: React.FC<MapProps> = ({
         style={{ height: '100vh', width: '100%', zIndex: 10 }}
         key={position.toString()} // Add key to force re-render on position change
       >
+
         <SearchControl />
         <ChangeMapView position={position} animateRef={animateRef} />
         <TileLayer
