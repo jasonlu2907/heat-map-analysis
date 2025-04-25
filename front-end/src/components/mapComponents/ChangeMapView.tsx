@@ -13,8 +13,7 @@ const ChangeMapView = ({
   const map = useMap();
 
   useEffect(() => {
-    if (position[0] !== 32.7357 && position[1] !== -97.1081) {
-      // set zoom to 14
+    if (position[0] !== 32.7044 || position[1] !== -97.1013) {
       map.setView(position, 14, {
         animate: animateRef.current || false,
       });

@@ -1,8 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React from 'react';
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet.heat';
 import { Point } from './mapComponents/HeatmapLayer';
-import ChangeMapView from './mapComponents/ChangeMapView';
 import Legend from './mapComponents/Legend';
 // import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer';
 import BorderLayer from './mapComponents/BorderLayer';
@@ -12,6 +11,8 @@ import GeoGridLayer from './mapComponents/GeoGridLayer';
 import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer.tsx';
 import GeoRiskHeatmap from './mapComponents/GeoRiskHeatmap.tsx';
 import SearchControl from './mapComponents/SearchControl';
+import { Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 
 interface MapProps {
   position: Point;
@@ -22,6 +23,8 @@ interface MapProps {
   showZipBorders: boolean;
   gridColors: Record<string, boolean>;
   riskMap: Record<number, number>;
+  markerLocation?: Point | null;
+  setMarkerLocation: (location: Point | null) => void;
 }
 
 const Map: React.FC<MapProps> = ({
@@ -32,10 +35,12 @@ const Map: React.FC<MapProps> = ({
   showGridCells,
   showZipBorders,
   gridColors,
-  riskMap
+  riskMap,
+  markerLocation,
+  setMarkerLocation,
 }) => {
-  const animateRef = useRef(true);
- // const heatmapData: Point[] = heatmapDatas;
+  // const animateRef = useRef(true);
+  // const heatmapData: Point[] = heatmapDatas;
   // const [riskMap, setRiskMap] = useState<Record<number, number>>({});
 
   // useEffect(() => {
@@ -63,9 +68,8 @@ const Map: React.FC<MapProps> = ({
         style={{ height: '100vh', width: '100%', zIndex: 10 }}
         key={position.toString()} // Add key to force re-render on position change
       >
-
         <SearchControl />
-        <ChangeMapView position={position} animateRef={animateRef} />
+        {/* <ChangeMapView position={position} animateRef={animateRef} /> */}
         <TileLayer
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -76,9 +80,12 @@ const Map: React.FC<MapProps> = ({
         {/* Outer Border Layer */}
         <BorderLayer clickedZip={clickedZip} />
 
-        {/* Add GeoGridLayer for Risk Zones */}
-        {showGridCells && (
-          <GeoGridLayer gridColors={gridColors} riskMap={riskMap} />
+        {/* ZIP Code Borders - At the bottom */}
+        {showZipBorders && (
+          <ZipCodeBorderLayer
+            clickedZip={clickedZip}
+            setClickedZip={setClickedZip}
+          />
         )}
 
         {/* Heatmap Layer - Only render if showHeatmap is true */}
@@ -91,12 +98,37 @@ const Map: React.FC<MapProps> = ({
         )} */}
         {showHeatmap && <GeoRiskHeatmap showHeatmap={showHeatmap} />}
 
-        {/* ZIP Code Borders - Only render if showZipBorders is true */}
-        {showZipBorders && (
-          <ZipCodeBorderLayer
-            clickedZip={clickedZip}
-            setClickedZip={setClickedZip}
-          />
+        {/* GeoGridLayer - Top */}
+        {showGridCells && (
+          <GeoGridLayer gridColors={gridColors} riskMap={riskMap} />
+        )}
+
+        {markerLocation && (
+          <Marker
+            position={markerLocation}
+            icon={L.icon({
+              iconUrl:
+                'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png',
+              iconSize: [15, 25],
+            })}
+          >
+            <Popup>
+              <div>
+                Risk Area
+                <br />
+                Lat: {markerLocation[0]}
+                <br />
+                Lng: {markerLocation[1]}
+                <br />
+                <button
+                  onClick={() => setMarkerLocation(null)}
+                  className='mt-2 px-2 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600'
+                >
+                  Remove Me
+                </button>
+              </div>
+            </Popup>
+          </Marker>
         )}
 
         <Legend />

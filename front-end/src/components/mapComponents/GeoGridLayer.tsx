@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { Arlington_Risks } from '@/assets/arlington_risks';
+import React, { useState } from 'react';
 import { Polygon, Popup } from 'react-leaflet';
+import { LatLngTuple } from 'leaflet';
 
 // Function to determine color based on risk score
 const getColor = (risk: number) => {
@@ -22,17 +24,17 @@ interface GeoGridLayerProps {
 }
 
 const GeoGridLayer: React.FC<GeoGridLayerProps> = ({ gridColors, riskMap }) => {
-  const [gridData, setGridData] = useState<any[]>([]);
-  const [selectedPolygon, setSelectedPolygon] = useState<number | null>(null); // Track clicked polygon
+  const gridData = Arlington_Risks.features;
+  const [selectedPolygon, setSelectedPolygon] = useState<number | null>(null);
 
-  useEffect(() => {
-    fetch('/src/assets/arlington_grid_no_risk.geojson')
-      .then((response) => response.json())
-      .then((data) => {
-        setGridData(data.features);
-      })
-      .catch((error) => console.error('Error loading GeoJSON:', error));
-  }, []);
+  // useEffect(() => {
+  //   fetch('/src/assets/arlington_grid_no_risk.geojson')
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setGridData(data.features);
+  //     })
+  //     .catch((error) => console.error('Error loading GeoJSON:', error));
+  // }, []);
 
   return (
     <>
@@ -41,10 +43,10 @@ const GeoGridLayer: React.FC<GeoGridLayerProps> = ({ gridColors, riskMap }) => {
         const risk = riskMap[gridId] ?? 0;
         const color = getColor(risk);
         const coordinates = feature.geometry.coordinates[0].map(
-          (coord: number[]) => [coord[1], coord[0]]
-        ); // Swap [lon, lat] -> [lat, lon]
+          (coord: number[]): LatLngTuple => [coord[1], coord[0]]
+        );
         const isVisible = gridColors[color] ?? true;
-        
+
         return (
           <Polygon
             key={index}

@@ -5,6 +5,18 @@ import 'leaflet-geosearch/dist/geosearch.css';
 import L from 'leaflet';
 import './SearchControl.css';
 
+// Fix for marker icons in production
+const customIcon = new L.Icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  iconRetinaUrl:
+    'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
 const SearchControl = () => {
   const map = useMap();
   const markerRef = useRef<L.Marker | null>(null);
@@ -21,18 +33,18 @@ const SearchControl = () => {
       },
     });
 
-    const searchControl = new (GeoSearchControl as any)({
+    const searchControl = GeoSearchControl({
       provider,
       style: 'bar',
       autoClose: true,
       showMarker: true,
       keepResult: true,
       marker: {
-        icon: new L.Icon.Default(),
+        icon: customIcon,
         draggable: false,
       },
       searchLabel: 'Enter an address...',
-      notFoundMessage: 'Sorry, we couldn’t find that location.',
+      notFoundMessage: "Sorry, we couldn't find that location.",
       animateZoom: true,
       retainZoomLevel: false,
     });
@@ -50,7 +62,9 @@ const SearchControl = () => {
     // MutationObserver to detect clear button click
     const searchBox = document.querySelector('.leaflet-control-geosearch form');
     const observer = new MutationObserver(() => {
-      const input = document.querySelector('.leaflet-control-geosearch input') as HTMLInputElement;
+      const input = document.querySelector(
+        '.leaflet-control-geosearch input'
+      ) as HTMLInputElement;
       if (input && input.value === '' && markerRef.current) {
         map.removeLayer(markerRef.current); // remove the marker from the map
         markerRef.current = null;

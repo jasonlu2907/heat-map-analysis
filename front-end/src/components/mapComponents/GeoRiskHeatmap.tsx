@@ -2,18 +2,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet.heat';
+import { Arlington_Risks, Feature } from '@/assets/arlington_risks';
+import { calculateCentroid } from '@/utils/utilities';
+
+declare global {
+  interface Window {
+    // global object registered by heatmap.js. Used to create heapmap instances
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    h337: any; // must for TypeScript (TypeError)
+  }
+}
 
 // Define a type for heatmap points
 type Point = [number, number, number]; // [latitude, longitude, intensity]
-
-interface Feature {
-  geometry: {
-    coordinates: number[][][];
-  };
-  properties: {
-    risk: number;
-  };
-}
 
 interface Risk {
   grid_id: number;
@@ -21,60 +22,38 @@ interface Risk {
 }
 
 interface HeatmapLayerProps {
-  // clickedZip: string | null;
   showHeatmap: boolean;
 }
 
-// Function to calculate the centroid (center) of a polygon
-const calculateCentroid = (coordinates: number[][]): [number, number] => {
-  let latSum = 0,
-    lonSum = 0;
-  const count = coordinates.length;
-  coordinates.forEach(([lon, lat]) => {
-    latSum += lat;
-    lonSum += lon;
-  });
-  const centroid: [number, number] = [latSum / count, lonSum / count];
-
-  return centroid;
-};
-
-const GeoRiskHeatmap: React.FC<HeatmapLayerProps> = (showHeatmap) => {
+const GeoRiskHeatmap: React.FC<HeatmapLayerProps> = ({ showHeatmap }) => {
   const [heatmapData, setHeatmapData] = useState<Point[]>([]);
   const map = useMap();
-  const heatLayerRef = useRef<L.Layer | null>(null);
+  const overlayRef = useRef<L.ImageOverlay | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [gridResponse, riskResponse] = await Promise.all([
-          fetch('/src/assets/arlington_grid_no_risk.geojson'),
+        const gridResponse = Arlington_Risks;
+        const [riskResponse] = await Promise.all([
+          // fetch('/src/assets/arlington_grid_no_risk.geojson'),
           fetch('https://heatmap-analysis.onrender.com/get-risks'),
         ]);
 
-        const gridJson = await gridResponse.json();
+        // const gridJson = await gridResponse.json();
         const riskJson: Risk[] = await riskResponse.json();
-        // console.log(riskJson);
 
-        // Filter out zero-risk areas and create features with risk values
-        const heatPoints: Point[] = gridJson.features
+        const heatPoints: Point[] = gridResponse.features
           .map((feature: Feature, index: number) => {
-            const coords = feature.geometry.coordinates[0]; // Get polygon outline
-            const [lat, lon] = calculateCentroid(coords); // Compute centroid
-            const intensity = riskJson[index].predicted_risk || 0; // Assign risk value
-            return [lat, lon, intensity]; // Convert to [latitude, longitude, intensity]
-
-            // return {
-            //   ...feature,
-            //   centroid: [lat, lon, intensity],
-            //   properties: { risk: riskJson[index].predicted_risk || 0 },
-            // };
+            const coords = feature.geometry.coordinates[0];
+            const [lat, lon] = calculateCentroid(coords);
+            const intensity = riskJson[index]?.predicted_risk || 0;
+            return [lat, lon, intensity] as Point;
           })
-          .filter((point: Point) => point[2] > 0);
+          .filter((point) => point[2] > 0);
 
         setHeatmapData(heatPoints);
       } catch (error) {
-        console.error('Heatmap Error:', error);
+        console.error('Error fetching HeatmapData:', error);
       }
     };
 
@@ -82,31 +61,92 @@ const GeoRiskHeatmap: React.FC<HeatmapLayerProps> = (showHeatmap) => {
   }, []);
 
   useEffect(() => {
-    if (!map || heatmapData.length === 0) return;
+    if (!showHeatmap || !heatmapData.length) return;
 
-    if (!showHeatmap) {
-      if (heatLayerRef.current) {
-        map.removeLayer(heatLayerRef.current);
-        heatLayerRef.current = null;
+    (async () => {
+      // await loadScript(heatmapScript);
+
+      if (!window.h337 || typeof window.h337.create !== 'function') {
+        console.error('heatmap.js failed to load or is unavailable.');
+        return;
       }
-      return;
-    }
 
-    // Create the heatmap layer
-    const heatLayer = L.heatLayer(heatmapData, {
-      radius: 30, // Reduce radius to make hotspots clearer
-      blur: 20, // Reduce blur to prevent over-smoothing
-      maxZoom: 10, // Limit max zoom intensity
-      minOpacity: 0.3, // Ensure heatmap stays visible
-      max: 9.0, // Keep max intensity at 1
-    });
+      // Get map container size
+      const mapSize = map.getSize();
 
-    heatLayer.addTo(map);
+      // Create container with map dimensions
+      const container = document.createElement('div');
+      container.style.width = `${mapSize.x}px`;
+      container.style.height = `${mapSize.y}px`;
+      container.style.position = 'absolute';
+      container.style.visibility = 'hidden';
+      document.body.appendChild(container);
 
+      const heatmap = window.h337.create({
+        container,
+        // radius: 0.055 * Math.min(mapSize.x, mapSize.y), // Relative to map size
+        radius: 37,
+        maxOpacity: 0.8,
+        minOpacity: 0.3,
+        blur: 0.85,
+        gradient: {
+          0.0: 'blue',
+          0.4: 'cyan',
+          0.6: 'lime',
+          0.8: 'yellow',
+          1.0: 'red',
+        },
+      });
+
+      const bounds = map.getBounds();
+      const projected = heatmapData.map((p) => {
+        // Convert lat/lng to pixel coordinates
+        const point = map.latLngToContainerPoint([p[0], p[1]]);
+        return {
+          x: point.x,
+          y: point.y,
+          value: p[2],
+        };
+      });
+
+      // Find max value for proper scaling
+      const maxValue = Math.max(...projected.map((p) => p.value));
+
+      heatmap.setData({
+        max: maxValue,
+        data: projected,
+      });
+
+      try {
+        const canvas = heatmap._renderer.canvas;
+        const url = canvas.toDataURL();
+
+        if (overlayRef.current) {
+          map.removeLayer(overlayRef.current);
+        }
+
+        const overlay = L.imageOverlay(url, bounds, {
+          opacity: 0.6,
+          interactive: false,
+        });
+        overlayRef.current = overlay;
+        overlay.addTo(map);
+      } catch (error) {
+        console.error('Error creating heatmap overlay:', error);
+      }
+
+      // Cleanup
+      container.remove();
+    })();
+
+    // Cleanup on unmount or when showHeatmap changes
     return () => {
-      heatLayer.remove(); // Remove heatmap layer when unmounting
+      if (overlayRef.current) {
+        map.removeLayer(overlayRef.current);
+        overlayRef.current = null;
+      }
     };
-  }, [map, heatmapData, showHeatmap]);
+  }, [heatmapData, map, showHeatmap]);
 
   return null; // No direct rendering needed
 };
