@@ -84,7 +84,12 @@ const SideBar: React.FC<SideBarProps> = ({
         } w-64 z-40`}
       >
         <SidebarHeader>
-          <h2 className='text-xl font-semibold mb-6 mx-auto'>AFRAM</h2>
+          <h2
+            className='text-xl font-semibold mb-6 mx-auto cursor-pointer hover:text-blue-600 transition-colors'
+            onClick={() => window.location.reload()}
+          >
+            AFRAM
+          </h2>
         </SidebarHeader>
 
         <SidebarContent>

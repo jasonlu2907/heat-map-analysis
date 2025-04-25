@@ -24,6 +24,7 @@ interface MapProps {
   gridColors: Record<string, boolean>;
   riskMap: Record<number, number>;
   markerLocation?: Point | null;
+  setMarkerLocation: (location: Point | null) => void;
 }
 
 const Map: React.FC<MapProps> = ({
@@ -36,6 +37,7 @@ const Map: React.FC<MapProps> = ({
   gridColors,
   riskMap,
   markerLocation,
+  setMarkerLocation,
 }) => {
   // const animateRef = useRef(true);
   // const heatmapData: Point[] = heatmapDatas;
@@ -100,20 +102,31 @@ const Map: React.FC<MapProps> = ({
             setClickedZip={setClickedZip}
           />
         )}
+
         {markerLocation && (
           <Marker
             position={markerLocation}
             icon={L.icon({
               iconUrl:
                 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png',
+              iconSize: [15, 25],
             })}
           >
             <Popup>
-              Risk Area
-              <br />
-              Lat: {markerLocation[0]}
-              <br />
-              Lng: {markerLocation[1]}
+              <div>
+                Risk Area
+                <br />
+                Lat: {markerLocation[0]}
+                <br />
+                Lng: {markerLocation[1]}
+                <br />
+                <button
+                  onClick={() => setMarkerLocation(null)}
+                  className='mt-2 px-2 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600'
+                >
+                  Remove Me
+                </button>
+              </div>
             </Popup>
           </Marker>
         )}

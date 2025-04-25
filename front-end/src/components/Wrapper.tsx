@@ -4,6 +4,7 @@ import { Point } from './mapComponents/HeatmapLayer';
 import Map from './Map';
 import SideBar from './SideBar';
 import { Arlington_Risks, Feature } from '@/assets/arlington_risks';
+import { calculateCentroid } from '@/utils/utilities';
 
 interface WrapperProps {
   mapCenter: Point;
@@ -44,10 +45,10 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
         grid.features.forEach((feature: Feature) => {
           const risk = riskMapFromAPI[feature.properties.grid_id];
           // Check if risk is above a certain threshold (e.g., 8)
-          // preset 5.5
-          if (risk > 5.5) {
+          // preset 6
+          if (risk > 6) {
             const coords = feature.geometry.coordinates[0];
-            const [lon, lat] = coords[0]; // first corner of the polygon
+            const [lat, lon] = calculateCentroid(coords);
             newNotifications.push(
               `Risk level ${risk.toFixed(1)} at <${lat.toFixed(
                 4
@@ -136,6 +137,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
           gridColors={gridColors}
           riskMap={riskMap}
           markerLocation={markerLocation}
+          setMarkerLocation={setMarkerLocation}
         />
       </div>
 

@@ -3,6 +3,7 @@ import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet.heat';
 import { Arlington_Risks, Feature } from '@/assets/arlington_risks';
+import { calculateCentroid } from '@/utils/utilities';
 
 declare global {
   interface Window {
@@ -23,19 +24,6 @@ interface Risk {
 interface HeatmapLayerProps {
   showHeatmap: boolean;
 }
-
-// Function to calculate the centroid (center) of a polygon
-const calculateCentroid = (coordinates: number[][]): [number, number] => {
-  let latSum = 0,
-    lonSum = 0;
-  const count = coordinates.length;
-
-  coordinates.forEach(([lon, lat]) => {
-    latSum += lat;
-    lonSum += lon;
-  });
-  return [latSum / count, lonSum / count];
-};
 
 const GeoRiskHeatmap: React.FC<HeatmapLayerProps> = ({ showHeatmap }) => {
   const [heatmapData, setHeatmapData] = useState<Point[]>([]);
@@ -96,8 +84,8 @@ const GeoRiskHeatmap: React.FC<HeatmapLayerProps> = ({ showHeatmap }) => {
 
       const heatmap = window.h337.create({
         container,
-        radius: 0.04 * Math.min(mapSize.x, mapSize.y), // Relative to map size
-        // radius: 38,
+        // radius: 0.055 * Math.min(mapSize.x, mapSize.y), // Relative to map size
+        radius: 37,
         maxOpacity: 0.8,
         minOpacity: 0.3,
         blur: 0.85,
