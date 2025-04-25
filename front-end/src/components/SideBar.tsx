@@ -138,7 +138,7 @@ const SideBar: React.FC<SideBarProps> = ({
 
           <SidebarMenu className='mt-4'>
             {/* Filter Section */}
-            <Collapsible defaultOpen={false} className='group/collapsible'>
+            <Collapsible defaultOpen={true} className='group/collapsible'>
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton isActive>
@@ -159,7 +159,7 @@ const SideBar: React.FC<SideBarProps> = ({
             </Collapsible>
 
             {/* Heatmap Settings */}
-            <Collapsible defaultOpen={false} className='group/collapsible'>
+            <Collapsible defaultOpen={true} className='group/collapsible'>
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton isActive>
@@ -203,7 +203,7 @@ const SideBar: React.FC<SideBarProps> = ({
             </Collapsible>
 
             {/* Grid Settings */}
-            <Collapsible defaultOpen={false} className='group/collapsible'>
+            <Collapsible defaultOpen={true} className='group/collapsible'>
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton isActive>

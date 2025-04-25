@@ -79,7 +79,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
 
   const [showHeatmap, setShowHeatmap] = useState(true); // Heatmap visibility state
   const [showZipBorders, setShowZipBorders] = useState(true); // ZIP code borders visibility state
-  const [showGridCells, setShowGridCells] = useState(true); // ZIP code borders visibility state
+  const [showGridCells, setShowGridCells] = useState(false); // ZIP code borders visibility state
   const [clickedZip, setClickedZip] = useState<string | null>(null); // Selected ZIP code state
   const [gridColors, setGridColors] = useState<GridColorsState>({
     'rgba(221, 40, 40, 0.95)': true,
