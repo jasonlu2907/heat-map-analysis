@@ -107,22 +107,22 @@ const SideBar: React.FC<SideBarProps> = ({
                 </button>
               </PopoverTrigger>
               <PopoverContent className='w-80 p-4 shadow-md bg-white border rounded-md'>
-                <h4 className='text-sm font-medium'>Notifications</h4>
+                <h4 className='text-sm font-medium mb-2'>Notifications</h4>
                 {notifications.length > 0 ? (
-                  <ul className='space-y-2'>
+                  <ul className='space-y-2 max-h-[300px] overflow-y-auto pr-2'>
                     {notifications.map((notification, index) => (
                       <li
                         key={index}
                         onClick={() => handleNotificationClick(notification)}
                         className='flex justify-between items-center p-2 bg-gray-100 rounded-md text-sm cursor-pointer hover:bg-gray-200 transition'
                       >
-                        <span>{notification}</span>
+                        <span className='mr-2 flex-1'>{notification}</span>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             removeNotification(index);
                           }}
-                          className='text-gray-400 text-s font-bold hover:text-gray-600'
+                          className='text-gray-400 text-s font-bold hover:text-gray-600 ml-2'
                         >
                           X
                         </button>

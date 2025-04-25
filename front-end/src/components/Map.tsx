@@ -80,9 +80,12 @@ const Map: React.FC<MapProps> = ({
         {/* Outer Border Layer */}
         <BorderLayer clickedZip={clickedZip} />
 
-        {/* Add GeoGridLayer for Risk Zones */}
-        {showGridCells && (
-          <GeoGridLayer gridColors={gridColors} riskMap={riskMap} />
+        {/* ZIP Code Borders - At the bottom */}
+        {showZipBorders && (
+          <ZipCodeBorderLayer
+            clickedZip={clickedZip}
+            setClickedZip={setClickedZip}
+          />
         )}
 
         {/* Heatmap Layer - Only render if showHeatmap is true */}
@@ -95,12 +98,9 @@ const Map: React.FC<MapProps> = ({
         )} */}
         {showHeatmap && <GeoRiskHeatmap showHeatmap={showHeatmap} />}
 
-        {/* ZIP Code Borders - Only render if showZipBorders is true */}
-        {showZipBorders && (
-          <ZipCodeBorderLayer
-            clickedZip={clickedZip}
-            setClickedZip={setClickedZip}
-          />
+        {/* GeoGridLayer - Top */}
+        {showGridCells && (
+          <GeoGridLayer gridColors={gridColors} riskMap={riskMap} />
         )}
 
         {markerLocation && (
