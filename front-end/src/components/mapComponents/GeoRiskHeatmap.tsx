@@ -49,7 +49,7 @@ const GeoRiskHeatmap: React.FC<HeatmapLayerProps> = ({ showHeatmap }) => {
             const intensity = riskJson[index]?.predicted_risk || 0;
             return [lat, lon, intensity] as Point;
           })
-          .filter((point) => point[2] > 0);
+          .filter((point) => point[2] > 1);
 
         setHeatmapData(heatPoints);
       } catch (error) {

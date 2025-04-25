@@ -46,7 +46,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
           const risk = riskMapFromAPI[feature.properties.grid_id];
           // Check if risk is above a certain threshold (e.g., 8)
           // preset 6
-          if (risk > 4) {
+          if (risk > 3) {
             const coords = feature.geometry.coordinates[0];
             const [lat, lon] = calculateCentroid(coords);
             newNotifications.push(
