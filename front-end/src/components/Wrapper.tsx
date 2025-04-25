@@ -22,6 +22,7 @@ export type GridColorsState = Record<GridColor, boolean>;
 const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
   const [riskMap, setRiskMap] = useState<Record<number, number>>({});
   const [notifications, setNotifications] = useState<string[]>([]);
+  const [markerLocation, setMarkerLocation] = useState<Point | null>(null);
 
   useEffect(() => {
     const fetchRiskData = async () => {
@@ -91,12 +92,12 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
     setNotifications(
       notifications.filter((_, index) => index !== indexToRemove)
     );
-  }; // Remove notification
+  };
 
   const handleZipCodeSubmit = (zipCoord: Point, zipCode: string) => {
     setMapCenter(zipCoord);
     setClickedZip(zipCode);
-  }; // Handle ZIP code submission
+  };
 
   const handleNotificationClick = (notification: string) => {
     // Match "<lat,lon>" pattern
@@ -106,17 +107,19 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
       const lon = parseFloat(match[2]);
       setMapCenter([lat, lon]);
       setClickedZip(null);
+      setMarkerLocation([lat, lon]);
     } else {
       console.warn('No coordinates found in notification:', notification);
     }
   };
 
-  const DEFAULT_MAP_CENTER: Point = [32.7357, -97.1081]; // Example: Arlington, TX coordinates
+  const DEFAULT_MAP_CENTER: Point = [32.7044, -97.1013];
 
   const handleReset = () => {
     setClickedZip(null);
     setMapCenter(DEFAULT_MAP_CENTER); // Center the map to the default position
     document.dispatchEvent(new CustomEvent('resetZipCode'));
+    setMarkerLocation(null);
   };
 
   return (
@@ -132,6 +135,7 @@ const Wrapper: React.FC<WrapperProps> = ({ mapCenter, setMapCenter }) => {
           showZipBorders={showZipBorders}
           gridColors={gridColors}
           riskMap={riskMap}
+          markerLocation={markerLocation}
         />
       </div>
 

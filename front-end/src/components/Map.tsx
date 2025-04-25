@@ -1,8 +1,7 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
 import 'leaflet.heat';
 import { Point } from './mapComponents/HeatmapLayer';
-import ChangeMapView from './mapComponents/ChangeMapView';
 import Legend from './mapComponents/Legend';
 // import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer';
 import BorderLayer from './mapComponents/BorderLayer';
@@ -12,6 +11,8 @@ import GeoGridLayer from './mapComponents/GeoGridLayer';
 import ZipCodeBorderLayer from './mapComponents/ZipCodeBorderLayer.tsx';
 import GeoRiskHeatmap from './mapComponents/GeoRiskHeatmap.tsx';
 import SearchControl from './mapComponents/SearchControl';
+import { Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 
 interface MapProps {
   position: Point;
@@ -22,6 +23,7 @@ interface MapProps {
   showZipBorders: boolean;
   gridColors: Record<string, boolean>;
   riskMap: Record<number, number>;
+  markerLocation?: Point | null;
 }
 
 const Map: React.FC<MapProps> = ({
@@ -33,8 +35,9 @@ const Map: React.FC<MapProps> = ({
   showZipBorders,
   gridColors,
   riskMap,
+  markerLocation,
 }) => {
-  const animateRef = useRef(true);
+  // const animateRef = useRef(true);
   // const heatmapData: Point[] = heatmapDatas;
   // const [riskMap, setRiskMap] = useState<Record<number, number>>({});
 
@@ -64,7 +67,7 @@ const Map: React.FC<MapProps> = ({
         key={position.toString()} // Add key to force re-render on position change
       >
         <SearchControl />
-        <ChangeMapView position={position} animateRef={animateRef} />
+        {/* <ChangeMapView position={position} animateRef={animateRef} /> */}
         <TileLayer
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -96,6 +99,23 @@ const Map: React.FC<MapProps> = ({
             clickedZip={clickedZip}
             setClickedZip={setClickedZip}
           />
+        )}
+        {markerLocation && (
+          <Marker
+            position={markerLocation}
+            icon={L.icon({
+              iconUrl:
+                'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png',
+            })}
+          >
+            <Popup>
+              Risk Area
+              <br />
+              Lat: {markerLocation[0]}
+              <br />
+              Lng: {markerLocation[1]}
+            </Popup>
+          </Marker>
         )}
 
         <Legend />
