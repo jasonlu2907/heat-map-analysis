@@ -1,50 +1,121 @@
-# React + TypeScript + Vite
+# AFRAM Front-end
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the front-end application for the AFRAM (Arlington Fire Risk Assessment Map) project, a web-based visualization tool for fire risk assessment in Arlington, Texas.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React**: Core framework for building the user interface
+- **TypeScript**: For type-safe JavaScript development
+- **Leaflet & React-Leaflet**: For interactive map functionality
+  - `leaflet-geosearch`: For location search capabilities
+  - `leaflet.heat`: For heatmap visualization
+- **Tailwind CSS**: For styling and responsive design
+- **Radix UI**: For accessible UI components
+  - Collapsible
+  - Popover
+  - Switch
+- **Lucide React**: For modern icons
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- 📍 Interactive map with multiple visualization layers:
+  - ZIP code borders
+  - Risk heatmap overlay
+  - Grid cell visualization
+- 🔍 Location search with OpenStreetMap integration
+- 📱 Responsive sidebar with:
+  - Real-time risk notifications
+  - Layer visibility controls
+  - Color-coded grid settings
+- 🎨 Dynamic risk visualization with:
+  - Heatmap overlay
+  - Color-coded grid cells
+  - ZIP code boundary highlighting
 
-- Configure the top-level `parserOptions` property like this:
+## Getting Started
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+
+```bash
+git clone [repository-url]
+cd front-end
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. Install dependencies
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+npm install
+# or
+yarn install
 ```
+
+3. Start the development server
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+The application will be available at `http://localhost:5173` (or your configured port).
+
+## Project Structure
+
+```
+front-end/
+├── src/
+│   ├── components/
+│   │   ├── mapComponents/     # Map-related components
+│   │   ├── sidebarComponents/ # Sidebar-related components
+│   │   ├── ui/               # Reusable UI components
+│   │   └── ...
+│   ├── assets/               # Static assets and data
+│   ├── utils/                # Utility functions
+│   └── ...
+└── ...
+```
+
+## Features in Detail
+
+### Map Visualization
+
+- Multiple layer support with configurable visibility
+- Interactive ZIP code boundaries
+- Dynamic risk heatmap overlay
+- Color-coded grid cells for risk visualization
+- Custom markers for highlighted locations
+
+### Search Functionality
+
+- Address search with OpenStreetMap integration
+- Automatic map centering and zooming
+- Custom marker placement
+
+### Risk Notifications
+
+- Real-time risk level display
+- Interactive notification system
+- Click-to-view on map functionality
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+## Acknowledgments
+
+- OpenStreetMap for map data
+- Leaflet for map visualization
+- All contributors to the project
