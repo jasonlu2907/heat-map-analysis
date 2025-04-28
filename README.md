@@ -1,4 +1,4 @@
-# AFRAM Front-end
+# AFRAM Frontend Documentation
 
 This is the front-end application for the AFRAM (Arlington Fire Risk Assessment Map) project, a web-based visualization tool for fire risk assessment in Arlington, Texas.
 
